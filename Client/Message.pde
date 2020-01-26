@@ -6,7 +6,7 @@ from the server
 */
 class Message{
 
-    private static final String root_name = "msg";
+    public static final String root_name = "msg";
 
     HashMap<String, String> data;
 
@@ -34,4 +34,13 @@ class Message{
         return data.get(k);
     }
   
+}
+
+Message msg_from_string(String s){
+    XML root = parseXML(s);
+    Message msg = new Message();
+    for(XML e : root.getChildren()){
+        msg.put(e.getName(), e.getContent());
+    }
+    return msg;
 }

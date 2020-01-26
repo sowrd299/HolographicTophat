@@ -12,6 +12,11 @@ def main():
         while not msg:
             msg = c.recieve()
         print("Recieved message: ",msg)
+        c.send(Message(
+            type = "card_draw",
+            cards_draw = "For Sant Cler!"
+        ))
+        print("Message sent!")
 
 if __name__ == "__main__":
     main()
