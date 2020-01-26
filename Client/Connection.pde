@@ -44,7 +44,7 @@ class Connection{
     void send(Message msg){
         String data = msg.to_string();
         try{
-            out.writeBytes(data + 'n');
+            out.writeBytes(data);
         }catch(IOException e){
             System.out.println("IOException on Send");
         }

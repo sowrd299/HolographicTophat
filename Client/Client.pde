@@ -5,11 +5,13 @@ Connection con;
 // graphics variables
 StarFieldBG bg;
 
+
 void setup(){
   
   // setup the render
-  //size(200,200);
   fullScreen();
+  // size(520,920);
+
   bg = new StarFieldBG();
 
   // connect
