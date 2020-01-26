@@ -7,6 +7,7 @@ String server_ip = "196.168.1.65"; // the ip of the server computer
 public OscP5 oscP5;
 public NetAddress server_addr;
 
+// starfield variables
 int[][] star_coords;
 
 void setup(){
@@ -22,12 +23,12 @@ void setup(){
   }
 
   // setup tcp
-  //oscP5 = new OscP5(this, server_ip, socket, OscP5.TCP);
+  oscP5 = new OscP5(this, server_ip, socket, OscP5.TCP);
 }
 
 void mousePressed() {
   // when the player touches the screen
-  //oscP5.send("/test", new Object[]{new Integer(1)});
+  oscP5.send("/test", new Object[]{new Integer(1)});
 }
 
 void draw() {
@@ -38,5 +39,16 @@ void draw() {
   for(int i = 0; i < 1000; i++){
     strokeWeight(random(1,4));
     point(star_coords[i][0], star_coords[i][1]);
+  }
+}
+
+// a testing recieve method from the OscP5tcp example
+void oscEvent(OscMessage theMessage) {
+  /* in this example, both the server and the client share this oscEvent method */
+  System.out.println("### got a message " + theMessage);
+  if(theMessage.checkAddrPattern("/test")) {
+    /* message was send from the tcp client */
+    OscMessage m = new OscMessage("/response");
+    m.add("server response: got it");
   }
 }
