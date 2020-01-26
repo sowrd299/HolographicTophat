@@ -9,8 +9,8 @@ Button button;
 void setup(){
   
   // setup the render
-  //fullScreen();
-  size(520,920);
+  fullScreen();
+  //size(520,920);
 
   bg = new StarFieldBG();
 
@@ -19,8 +19,8 @@ void setup(){
   con.connect(server_ip);
 
   // setup the test button
-  Rect r = new Rect(32,100,width-64,64);
-  button = new Button(r, "Send a Message", new TicketBox(r, color(240,60,60), 5, 16));
+  Rect r = new Rect(32,100,width-64,124);
+  button = new Button(r, "Send a Message", color(240,60,60), 5, 32);
 
 }
 

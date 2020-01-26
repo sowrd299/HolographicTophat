@@ -90,20 +90,29 @@ class Button {
     private Rect r;
     private String label;
     private TicketBox box;
+    private PFont font;
+    private int margin;
+    private color c;
 
-    Button(Rect rect, String label, TicketBox box){
+    Button(Rect rect, String label, color c, int stroke_weight, int corner_size){
         this.r= rect;
         this.label = label;
-        this.box = box;
+        this.box = new TicketBox(rect, c, stroke_weight, corner_size);
+        this.font = loadFont("OldeEnglish-Regular-48.vlw");
+        this.margin = 8;
+        // create the font color
+        colorMode(HSB);
+        this.c = color(hue(c), saturation(c), 50);
+        colorMode(RGB);
     }
 
     void draw(){
         box.draw();
         // draw the label
-        textSize(48);
+        textFont(font, r.h-(2*margin));
         textAlign(CENTER);
-        fill(0, 200);
-        text(label, r.x + r.w/2, r.y+r.h-8);
+        fill(c, 200);
+        text(label, r.x + r.w/2, r.y+r.h-(int)(1.5 * margin));
     }
 
     boolean clicked_by(int x, int y){
