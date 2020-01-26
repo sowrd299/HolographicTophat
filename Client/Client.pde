@@ -4,19 +4,23 @@ Connection con;
 
 // graphics variables
 StarFieldBG bg;
-
+Button button;
 
 void setup(){
   
   // setup the render
-  fullScreen();
-  // size(520,920);
+  //fullScreen();
+  size(520,920);
 
   bg = new StarFieldBG();
 
   // connect
   con = new Connection();
   con.connect(server_ip);
+
+  // setup the test button
+  Rect r = new Rect(32,100,width-64,64);
+  button = new Button(r, "Send a Message", new TicketBox(r, color(240,60,60), 5, 16));
 
 }
 
@@ -33,6 +37,7 @@ void mousePressed() {
 
 void draw() {
   bg.draw();
+  button.draw();
 
   // check for incoming messages
   Message resp = con.recieve();
