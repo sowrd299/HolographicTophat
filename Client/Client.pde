@@ -1,17 +1,6 @@
-import oscP5.*; // the OscP5 library must be installed in processing/libraries
-import netP5.*;
-import java.net.*;
-
-int port = 5006;
+// Networking variables
 String server_ip = "192.168.1.65"; // the ip of the server computer
-
-/*
-public TcpServer
-
-public TcpClient con; // the connection to the server
-public NetAddress server_addr;
-*/
-Socket soc;
+Connection con;
 
 // starfield variables
 int[][] star_coords;
@@ -22,6 +11,10 @@ void setup(){
   //size(200,200);
   fullScreen();
 
+  // connect
+  con = new Connection();
+  con.connect(server_ip);
+
   // setup stars
   star_coords = new int[1000][2];
   for(int i = 0; i < star_coords.length; i++) {
@@ -29,25 +22,11 @@ void setup(){
     star_coords[i][1] = (int)random(0,height);
   }
 
-  // setup tcp
-  System.out.println("Connecting...");
-  try{
-    soc = new Socket(server_ip, port);
-    System.out.println("Connected!");
-  }catch(UnknownHostException e){
-    System.out.println("UnkownHostException");
-  }catch(IOException e){
-    System.out.println("IOException");
-  }
-  /*
-  con = new TcpClient(this, server_ip, port, TcpClient.MODE_STREAM);
-  if(con.)
-  */
 }
 
 void mousePressed() {
   // when the player touches the screen
-  
+  con.send("<msg><type>Turn</type><card>Mechanized Gunfire</card></msg>");
 }
 
 void draw() {

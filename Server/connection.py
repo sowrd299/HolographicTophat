@@ -61,7 +61,11 @@ class Connection():
     '''
     def recieve(self):
         self.recieve_data()
-        return Message.from_str(self.recieve_msg())
+        msg = self.recieve_msg()
+        if msg:
+            return Message.from_str(msg)
+        else:
+            return None
 
     '''
     Closes the connection.
