@@ -4,7 +4,10 @@ Connection con;
 
 // graphics variables
 StarFieldBG bg;
-Button button;
+color holo_color;
+Menu menu;
+
+// TOP-LEVEL CONTROL FUNCTIONS
 
 void setup(){
   
@@ -12,38 +15,75 @@ void setup(){
   fullScreen();
   //size(520,920);
 
-  bg = new StarFieldBG();
 
   // connect
   con = new Connection();
   con.connect(server_ip);
 
-  // setup the test button
-  Rect r = new Rect(32,100,width-64,124);
-  button = new Button(r, "Send a Message", color(240,60,60), 5, 32);
+  // setup the GUI
+  holo_color = color(240,60,60);
+  bg = new StarFieldBG();
+  menu = new MainMenu(holo_color, new MenuSwitcher());
+  menu.init();
 
 }
 
 // when the player touches the screen
 void mousePressed() {
 
-  // send a message
-  if(button.clicked_by(mouseX,mouseY)){
-    Message msg = new Message();
-    msg.put("type", "turn");
-    msg.put("cards_played", "Machanized Gunfire");
-    con.send(msg);
+  for(Button button : menu.get_buttons()){
+    if(button.click(mouseX,mouseY)){
+      // once we've clicked a button, break
+      break;
+    }
   }
 
 }
 
 void draw() {
   bg.draw();
-  button.draw();
+  menu.draw();
 
   // check for incoming messages
   Message resp = con.recieve();
   if(resp != null) {
     System.out.println("Recieved message: "+resp.to_string());
   }
+}
+
+// OTHER CONTROL FUNCTIONS, WHICH CAN BE CALLED
+
+/**
+Provides a callback for switching the menu
+*/
+class MenuSwitcher{
+
+  class MenuSwitcherHandler implements ButtonHandler{
+
+    private Menu menu;
+    private MenuSwitcher switcher;
+
+    MenuSwitcherHandler(Menu menu, MenuSwitcher switcher){
+      this.menu = menu;
+      this.switcher = switcher;
+    }
+
+    void on_click(){
+      switcher.switch_menu(menu);
+    }
+
+  }
+
+  void switch_menu(Menu m) {
+    menu = m;
+    menu.init();
+  }
+
+  /**
+  Creates a button handler that switches the menu
+  */
+  MenuSwitcherHandler create_button_handler(Menu m){
+    return new MenuSwitcherHandler(m, this);
+  }
+
 }

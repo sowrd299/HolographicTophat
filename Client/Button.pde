@@ -82,28 +82,41 @@ class TicketBox {
 
 }
 
+interface ButtonHandler {
+    void on_click();
+}
+
 /**
 A class to represent a button the user can interact with
  */
 class Button {
     
     private Rect r;
+
     private String label;
     private TicketBox box;
     private PFont font;
     private int margin;
     private color c;
 
-    Button(Rect rect, String label, color c, int stroke_weight, int corner_size){
+    ButtonHandler handler;
+
+    Button(Rect rect, String label, color c, ButtonHandler handler, int stroke_weight, int corner_size){
         this.r= rect;
         this.label = label;
         this.box = new TicketBox(rect, c, stroke_weight, corner_size);
         this.font = loadFont("OldeEnglish-Regular-48.vlw");
         this.margin = 8;
+
+        this.handler = handler;
         // create the font color
         colorMode(HSB);
         this.c = color(hue(c), saturation(c), 50);
         colorMode(RGB);
+    }
+
+    String get_label(){
+        return label;
     }
 
     void draw(){
@@ -112,11 +125,15 @@ class Button {
         textFont(font, r.h-(2*margin));
         textAlign(CENTER);
         fill(c, 200);
-        text(label, r.x + r.w/2, r.y+r.h-(int)(1.5 * margin));
+        text(get_label(), r.x + r.w/2, r.y+r.h-(int)(1.5 * margin));
     }
 
-    boolean clicked_by(int x, int y){
-        return this.r.touches_point(x,y);
+    boolean click(int x, int y){
+        if(handler != null && r.touches_point(x,y)){
+            handler.on_click();
+            return true;
+        }
+        return false;
     }
     
 }
