@@ -28,10 +28,12 @@ void setup(){
 void mousePressed() {
 
   // send a message
-  Message msg = new Message();
-  msg.put("type", "turn");
-  msg.put("cards_played", "Machanized Gunfire");
-  con.send(msg);
+  if(button.clicked_by(mouseX,mouseY)){
+    Message msg = new Message();
+    msg.put("type", "turn");
+    msg.put("cards_played", "Machanized Gunfire");
+    con.send(msg);
+  }
 
 }
 

@@ -61,19 +61,19 @@ class TicketBox {
         vertex(x1, r.y);
 
         // top right corner
-        bezierVertex(x2, r.y, x2, y1, x2, r.y);
+        vertex(x2, r.y);
         bezierVertex(x2, y1, x3, y1, x3, y1);
 
         // bottom right corner
-        bezierVertex(x3, y2, x2, y2, x3, y2);
+        vertex(x3,y2);
         bezierVertex(x2, y2, x2, y3, x2, y3);
 
         // bottom left corner
-        bezierVertex(x1, y3, x1, y2, x1, y3);
+        vertex(x1,y3);
         bezierVertex(x1, y2, r.x, y2, r.x, y2);
 
         // top left corner
-        bezierVertex(r.x, y1, x1, y1, r.x, y1);
+        vertex(r.x,y1);
         bezierVertex(x1, y1, x1, r.y, x1, r.y);
 
         endShape();
@@ -99,6 +99,11 @@ class Button {
 
     void draw(){
         box.draw();
+        // draw the label
+        textSize(48);
+        textAlign(CENTER);
+        fill(0, 200);
+        text(label, r.x + r.w/2, r.y+r.h-8);
     }
 
     boolean clicked_by(int x, int y){
