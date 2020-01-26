@@ -26,7 +26,10 @@ void setup(){
 
 void mousePressed() {
   // when the player touches the screen
-  con.send("<msg><type>Turn</type><card>Mechanized Gunfire</card></msg>");
+  Message msg = new Message();
+  msg.put("type", "turn");
+  msg.put("cards_played", "Machanized Gunfire");
+  con.send(msg);
 }
 
 void draw() {

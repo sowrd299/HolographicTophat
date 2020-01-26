@@ -31,7 +31,8 @@ class Connection{
     }
 
     // send
-    void send(String data){
+    void send(Message msg){
+        String data = msg.to_string();
         try{
             out.writeBytes(data + 'n');
         }catch(IOException e){
