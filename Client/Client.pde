@@ -20,10 +20,16 @@ void setup(){
   con = new Connection();
   con.connect(server_ip);
 
+  // testing content
+  Opponent[] opponents = new Opponent[]{
+    new Opponent("Micu"),
+    new Opponent("Jarli")
+  };
+
   // setup the GUI
   holo_color = color(240,60,60);
   bg = new StarFieldBG();
-  menu = new MainMenu(holo_color, new MenuSwitcher());
+  menu = new MainMenu(opponents, new MenuSwitcher(), holo_color);
   menu.init();
 
 }

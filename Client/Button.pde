@@ -23,6 +23,25 @@ class Rect{
 }
 
 /**
+Returns an array of teslated rects created to the given speficications
+*/
+Rect[] create_rects(int x, int y, int w, int h, int x_padding, int y_padding, int rows, int cols){
+
+    Rect[] r = new Rect[rows * cols];
+    int x_step = w + x_padding;
+    int y_step = h + y_padding;
+
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < cols; j++){
+            r[i*cols + j] = new Rect(x+(j*x_step),y+(i*y_step),w,h);
+        }
+    }
+
+    return r;
+
+}
+
+/**
 A class to render a fancy box
  */
 class TicketBox {

@@ -15,9 +15,12 @@ class HandMenu extends Menu{
     // menu items
     Button[] card_buttons;
 
-    HandMenu(Hand hand, ButtonHandler when_finished, color holo_color){
+    PlayPosition position;
+
+    HandMenu(Hand hand, PlayPosition position, ButtonHandler when_finished, color holo_color){
         super(null, holo_color);
         this.hand = hand;
+        this.position = position;
         this.when_finished = when_finished;
     }
 
@@ -34,7 +37,7 @@ class HandMenu extends Menu{
                 new Rect(x, y, button_w, button_h),
                 cards[i].get_id(),
                 holo_color,
-                new CardButtonHandler(cards[i], when_finished),
+                new CardButtonHandler(cards[i], position, when_finished),
                 5, 32
             );
 
@@ -48,13 +51,24 @@ class HandMenu extends Menu{
 
     class CardButtonHandler implements ButtonHandler{
 
+        Card card;
         ButtonHandler when_finished;
+        PlayPosition position;
 
-        CardButtonHandler(Card card, ButtonHandler when_finished){
+        CardButtonHandler(Card card, PlayPosition position, ButtonHandler when_finished){
+            this.card = card;
+            this.position = position;
             this.when_finished = when_finished; 
         }
 
         void on_click(){
+            if(position != null){
+                Card prev = position.play_card(card);
+                if(prev != null) {
+                    hand.add_card(prev);
+                }
+                hand.remove_card(card);
+            }
             this.when_finished.on_click();
         }
 

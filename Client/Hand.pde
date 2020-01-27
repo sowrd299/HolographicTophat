@@ -3,6 +3,9 @@ A class for representing a hand of cards
 */
 class Hand {
 
+    /**
+    Lists all the card in the hand
+    */
     Card[] get_cards(){
 
         /**
@@ -14,6 +17,20 @@ class Hand {
             new Card("Mainframe Access"),
             new Card("Speak Softly")
         };
+    }
+
+    /**
+    Removes a given card from the hand
+    */
+    void remove_card(Card card){
+
+    }
+
+    /**
+    Adds a card to the hand
+    */
+    void add_card(Card card){
+
     }
   
 }
