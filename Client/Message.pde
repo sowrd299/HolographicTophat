@@ -10,8 +10,9 @@ class Message{
 
     HashMap<String, String> data;
 
-    Message(){
+    Message(String type){
         data = new HashMap<String, String>();
+        put("type",type);
     }
 
     void put(String k, String v){
@@ -36,9 +37,12 @@ class Message{
   
 }
 
+/**
+Recreates a message from a string
+*/
 Message msg_from_string(String s){
     XML root = parseXML(s);
-    Message msg = new Message();
+    Message msg = new Message("");
     for(XML e : root.getChildren()){
         msg.put(e.getName(), e.getContent());
     }

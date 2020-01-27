@@ -3,10 +3,12 @@ class MainMenu extends Menu {
     private Button[] play_buttons; // buttons for places where the player can play buttons
     private Button send_button;
     private Opponent[] opponents;
+    private ButtonHandler lockin_handler;
 
-    MainMenu(Opponent[] opponents, MenuSwitcher menu_switcher, color holo_color){
+    MainMenu(Opponent[] opponents, MenuSwitcher menu_switcher, ButtonHandler lockin_handler, color holo_color){
         super(menu_switcher, holo_color);
         this.opponents = opponents;
+        this.lockin_handler = lockin_handler;
     }
 
     void init() {
@@ -36,7 +38,7 @@ class MainMenu extends Menu {
             );
         };
 
-        send_button = new Button(new Rect(32,height-224,width-64,124), "Lock-in Action", holo_color, null, 5, 32);
+        send_button = new Button(new Rect(32,height-224,width-64,124), "Lock-in Action", holo_color, lockin_handler, 5, 32);
 
     }
 

@@ -41,12 +41,14 @@ class Connection{
         return false;
     }
 
-    void send(Message msg){
+    boolean send(Message msg){
         String data = msg.to_string();
         try{
             out.writeBytes(data);
+            return true;
         }catch(IOException e){
             System.out.println("IOException on Send");
+            return false;
         }
     }
 
