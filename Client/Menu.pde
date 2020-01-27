@@ -6,6 +6,8 @@ class Menu {
     MenuSwitcher menu_switcher;
     color holo_color;
 
+    Menu() {}
+
     Menu(MenuSwitcher m, color holo_color){
         menu_switcher = m;
         this.holo_color = holo_color;

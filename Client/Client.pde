@@ -7,6 +7,7 @@ GameplaySender gp_sender;
 StarFieldBG bg;
 color holo_color;
 Menu menu;
+MenuSwitcher switcher;
 
 // gameplay variables
 Opponent[] opponents;
@@ -24,20 +25,11 @@ void setup(){
   con = new Connection();
   con.connect(server_ip);
 
-  // testing content
-  opponents = new Opponent[]{
-    new Opponent("Micu"),
-    new Opponent("Jarli")
-  };
-
-  // gameplay connection
-  gp_sender = new GameplaySender(con, "Sayngos", opponents);
-
   // setup the GUI
   holo_color = color(240,60,60);
   bg = new StarFieldBG();
-  menu = new MainMenu(opponents, new MenuSwitcher(), gp_sender, holo_color);
-  menu.init();
+  switcher = new MenuSwitcher();
+  switcher.switch_menu(new Menu()); // placeholder loading menu
 
 }
 
@@ -54,6 +46,8 @@ void mousePressed() {
 }
 
 void draw() {
+
+  // actually draw the game
   bg.draw();
   menu.draw();
 
@@ -61,6 +55,31 @@ void draw() {
   Message resp = con.recieve();
   if(resp != null) {
     System.out.println("Recieved message: "+resp.to_string());
+    switch (resp.get("type")) {
+
+      // setups the game
+      case "setup":
+
+        // get the local id
+        String local_id = resp.get("you_are");
+
+        // setup opponents
+        String[] player_ids = resp.get("other_players").split(",",0);
+        opponents = new Opponent[player_ids.length];
+        for(int i = 0; i < player_ids.length; i++){
+          if(player_ids[i] != local_id){
+            opponents[i] = new Opponent(player_ids[i]);
+          }
+        }
+
+        // gameplay connection
+        gp_sender = new GameplaySender(con, local_id, opponents);
+        
+        // go into the game menu
+        switcher.switch_menu(new MainMenu(opponents, switcher, gp_sender, holo_color));
+        break;
+      
+    }
   }
 }
 
