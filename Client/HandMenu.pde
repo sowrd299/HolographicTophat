@@ -26,23 +26,45 @@ class HandMenu extends Menu{
 
     void init(){
 
-        int x = this.x;
-        int y = this.y;
+        boolean keep_option = position.get() != null; // if there is a card to have the option to keep
 
         Card[] cards = hand.get_cards(); 
-        card_buttons = new Button[cards.length];
+        card_buttons = new Button[cards.length + (keep_option? 2 : 1)];
+        Rect[] rects = create_rects(x,y,button_w,button_h,0,y_padding,card_buttons.length,1);
 
-        for(int i = 0; i < cards.length; i++){
+        int i;
+        for(i = 0; i < cards.length; i++){
             card_buttons[i] = new Button(
-                new Rect(x, y, button_w, button_h),
+                rects[i],
                 cards[i].get_id(),
                 holo_color,
                 new CardButtonHandler(cards[i], position, when_finished),
                 5, 32
             );
 
-            y += button_h + y_padding;
         }
+
+        // the keep button
+        if(keep_option) {
+            card_buttons[i] = new Button(
+                rects[i],
+                "<"+position.get().get_id()+">",
+                holo_color,
+                when_finished,
+                5, 32
+            );
+            i++;
+        }
+
+        // the none button
+        card_buttons[i] = new Button(
+            rects[i].get_section(0.5,0,0.5,1),
+            "None",
+            holo_color,
+            new CardButtonHandler(null, position, when_finished),
+            5, 32
+        );
+
     }
 
     Button[] get_buttons(){

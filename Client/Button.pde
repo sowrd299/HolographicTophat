@@ -20,6 +20,20 @@ class Rect{
                 y > this.y && y < this.y + h;
     }
 
+    /**
+    Returns a rect that is a sliced subsection of the total rect
+    Takes the pos and size of the new rect as percentages of the entire rect
+        where (0,0) is the upper left, and (1,1) is the lower right
+    */
+    Rect get_section(float rel_x, float rel_y, float rel_w, float rel_h){
+        return new Rect(
+            x + (int)(rel_x * (float)w),
+            y + (int)(rel_y * (float)h),
+            (int)(rel_w * (float)w),
+            (int)(rel_h * (float)h)
+        );
+    }
+
 }
 
 /**
