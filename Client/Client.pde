@@ -73,7 +73,7 @@ void draw() {
         }
 
         // gameplay connection
-        gp_sender = new GameplaySender(con, local_id, opponents);
+        gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
         
         // go into the game menu
         switcher.switch_menu(new MainMenu(opponents, switcher, gp_sender, holo_color));
@@ -82,7 +82,8 @@ void draw() {
       // tells the clients cards have been played
       case "card_play":
 
-        switcher.switch_menu(new AlertMenu(holo_color, switcher.create_button_handler(menu)));
+        switcher.switch_menu(new AlertMenu(resp.to_string(), holo_color, switcher.create_button_handler(menu)));
+        gp_sender.inc_turn();
       
     }
   }
@@ -136,8 +137,8 @@ class GameplaySender implements ButtonHandler{
   String local_id;
   int turn;
 
-  GameplaySender(Connection con, String local_id, Opponent[] opponents){
-    this.turn = 0;
+  GameplaySender(Connection con, String local_id, Opponent[] opponents, int starting_turn){
+    this.turn = starting_turn;
     this.con = con;
     this.opponents = opponents;
     this.local_id = local_id;

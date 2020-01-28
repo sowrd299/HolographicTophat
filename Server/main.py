@@ -48,6 +48,8 @@ class Match():
             self.collected_args = dict()
             self.turn += 1
 
+    def get_turn(self):
+        return self.turn
 
     '''
     a loop that manages a single client playing this game
@@ -109,7 +111,8 @@ def main():
         c.send(Message( 
             type = "setup",
             you_are = client_ids[client_ind],
-            other_players = ",".join(c for c in client_ids if not c == client_ids[client_ind])
+            other_players = ",".join(c for c in client_ids if not c == client_ids[client_ind]),
+            turn = str(match.get_turn())
         ))
         # start the thread
         Thread(target=match.manage_client, args=(c,client_ids[client_ind])).start()

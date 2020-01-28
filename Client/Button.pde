@@ -52,8 +52,9 @@ class Button {
     private Rect r;
 
     private String label;
-    private TicketBox box;
-    private PFont font;
+    protected Box box;
+    protected PFont font;
+    protected int font_size;
     private int margin;
     private color c;
 
@@ -67,6 +68,7 @@ class Button {
         this.box = new TicketBox(rect, c, stroke_weight, corner_size);
         this.font = loadFont("OldeEnglish-Regular-48.vlw");
         this.margin = 16;
+        this.font_size = r.h-(2*margin);  
 
         this.handler = handler;
         // create the font color
@@ -85,10 +87,10 @@ class Button {
     void draw(){
         box.draw();
         // draw the label
-        textFont(font, r.h-(2*margin));
+        textFont(font, font_size);
         textAlign(CENTER);
         fill(c, 200);
-        text(get_label(), r.x + r.w/2, r.y+r.h-(int)(1.5 * margin));
+        text(get_label(), r.x + margin, r.y+ 1.5*margin, r.w - 2*margin, r.h);
         // draw the dots
         dots.draw();
     }
@@ -102,4 +104,18 @@ class Button {
         return false;
     }
     
+}
+
+/**
+A type of button based on the Desk Box for use in the background of menus
+*/
+class BackgroundButton extends Button {
+
+    BackgroundButton(Rect rect, String label, color c, ButtonHandler handler, int font_size, int stroke_weight, int corner_size, int margin){
+        super(rect, label, c, handler, stroke_weight, corner_size);
+        font = loadFont("TlwgTypist-48.vlw");
+        this.font_size = font_size;
+        box = new DeskBox(rect, c, stroke_weight, corner_size, margin);
+    }
+
 }
