@@ -1,4 +1,5 @@
 from xml.etree import ElementTree
+import re
 
 '''
 A class for managing messages from client to server
@@ -46,3 +47,10 @@ class Message():
     '''
     def get(self, key):
         return self.data[key]
+
+    '''
+    Returns a list of all keys that match a regex
+    '''
+    def regex_get_keys(self, pattern):
+        prog = re.compile(pattern)
+        return [ k for k in self.data if prog.match(k) ]

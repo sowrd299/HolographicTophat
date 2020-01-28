@@ -78,6 +78,11 @@ void draw() {
         // go into the game menu
         switcher.switch_menu(new MainMenu(opponents, switcher, gp_sender, holo_color));
         break;
+
+      // tells the clients cards have been played
+      case "card_play":
+
+        switcher.switch_menu(new AlertMenu(holo_color, switcher.create_button_handler(menu)));
       
     }
   }

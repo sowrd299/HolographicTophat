@@ -94,25 +94,26 @@ class DeskBox extends Box{
     /**
     Draws the tab decal for each corner
     */
-    void draw_corner(int x1, int y1, int x2, int y2, int x3, int y3) {
-
-        float inside_scale = (float)margin / (float)max(x1-x2, x3-x2);
+    void draw_corner(int x, int y, int x_dir, int y_dir) {
 
         beginShape();
 
-        vertex(x1,y1);
-        vertex(x2,y2);
-        vertex(x3,y3);
+        int x1 = x + (x_dir * corner_size);
+        int y3 = y + (y_dir * corner_size);
 
-        int x_cp1 = x3 + (int)((x1 - x2)*inside_scale);
-        int y_cp1 = y3 + (int)((y1 - y2)*inside_scale);
-        int x4 = x2 + (int)((x1 - x3)*inside_scale/2);
-        int y4 = y2 + (int)((y1 - y3)*inside_scale/2);
-        bezierVertex(x_cp1,y_cp1,x_cp1,y_cp1,x4,y4);
+        // the outside edges
+        vertex(x1, y);
+        vertex(x,y);
+        vertex(x, y3);
 
-        int x_cp2 = x1 + (int)((x3 - x2)*inside_scale);
-        int y_cp2 = y1 + (int)((y3 - y2)*inside_scale);
-        bezierVertex(x_cp2,y_cp2,x_cp2,y_cp2,x1,y1);
+        // the curves
+        int x_cp1 = x + (x_dir * margin/2);
+        int x4 = x + (x_dir * margin);
+        int y4 = y + (y_dir * margin);
+        bezierVertex(x_cp1, y3, x_cp1, y3, x4, y4);
+
+        int y_cp2 = y + (y_dir * margin/2);
+        bezierVertex(x1, y_cp2, x1, y_cp2, x1, y);
 
         endShape();
 
@@ -125,7 +126,10 @@ class DeskBox extends Box{
 
         super.draw();
 
-        draw_corner();
+        draw_corner(r.x, r.y, 1, 1);
+        draw_corner(r.x+r.w, r.y, -1, 1);
+        draw_corner(r.x+r.w, r.y+r.h, -1, -1);
+        draw_corner(r.x, r.y+r.h, 1, -1);
 
     }
 
