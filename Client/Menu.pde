@@ -1,14 +1,62 @@
 /**
-A class for representing a screen of the game
+A class for a UI element comprised of multiple buttons
 */
-class Menu {
+class CompositButton extends Button {
+
+    CompositButton(Rect rect, String label, color c, ButtonHandler general_handler){
+        super(rect, label, c, general_handler);
+    }
+
+    /**
+    Returns all the button components
+    */
+    Button[] get_buttons() {
+        return new Button[]{};
+    }
+
+    void draw(){
+        super.draw();
+        for(Button button : get_buttons()){
+            button.draw();
+        }
+    }
+
+    /**
+    Will allow the composit button and a component button to be clicked
+    ...at the same time.
+    Otherwise only allows the first button clicked to be clicked.
+    */
+    boolean click(int x, int y){
+
+        boolean base_clicked = super.click(x,y);
+
+        for(Button button : get_buttons()){
+            if(button.click(x,y)){
+                // once we've clicked a button, return true
+                return true;
+            }
+        }
+
+        return base_clicked;
+
+    }
+
+}
+
+/**
+A class specifically for representing a screen of the game
+*/
+class Menu extends CompositButton {
 
     MenuSwitcher menu_switcher;
     color holo_color;
 
-    Menu() {}
+    Menu() {
+        super(SCREEN_RECT, "", color(0), null);
+    }
 
     Menu(MenuSwitcher m, color holo_color){
+        super(SCREEN_RECT, "", holo_color, null);
         menu_switcher = m;
         this.holo_color = holo_color;
     }
@@ -18,19 +66,5 @@ class Menu {
     Is done on delay to allow for constructing new menus without eating up resources
     */
     void init() {}
-
-    /**
-    Returns all the buttons in the menu
-    */
-    Button[] get_buttons() {
-        return new Button[]{};
-    }
-
-    void draw(){
-        for(Button button : get_buttons()){
-            button.draw();
-        }
-    }
-
   
 }

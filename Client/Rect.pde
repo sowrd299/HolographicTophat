@@ -54,3 +54,8 @@ Rect[] create_rects(int x, int y, int w, int h, int x_padding, int y_padding, in
     return r;
 
 }
+
+/**
+the rect that represents the entire screen
+*/
+Rect SCREEN_RECT = new Rect(0,0,width,height);

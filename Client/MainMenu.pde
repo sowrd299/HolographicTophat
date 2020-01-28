@@ -38,7 +38,7 @@ class MainMenu extends Menu {
             );
         };
 
-        send_button = new Button(new Rect(32,height-224,width-64,124), "Lock-in Action", holo_color, lockin_handler, 5, 32);
+        send_button = new TicketButton(new Rect(32,height-224,width-64,124), "Lock-in Action", holo_color, lockin_handler, 5, 32);
 
     }
 

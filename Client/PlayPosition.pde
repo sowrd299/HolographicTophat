@@ -17,6 +17,10 @@ class PlayPosition {
         return prev;
     }
 
+    void clear(){
+        play_card(null);
+    }
+
     /**
     Returns the card currently played at this position
     */

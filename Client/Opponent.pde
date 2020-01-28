@@ -24,7 +24,7 @@ class Opponent{
 /**
 A class to render the oppoent as a button
 */
-class OpponentButton extends Button{
+class OpponentButton extends TicketButton{
 
     Opponent opponent;
 

@@ -13,6 +13,7 @@ MenuSwitcher switcher;
 
 // gameplay variables
 Opponent[] opponents;
+String local_id;
 HashMap<String,Player> players; // the players, by ID
 CardLoader cl;
 
@@ -42,13 +43,15 @@ void setup(){
 // when the player touches the screen
 void mousePressed() {
 
-  for(Button button : menu.get_buttons()){
-    if(button.click(mouseX,mouseY)){
-      // once we've clicked a button, break
-      break;
-    }
-  }
+  menu.click(mouseX, mouseY);
 
+}
+
+/**
+Returns what to call the given player
+*/
+String player_name(String player_id){
+  return player_id.equals(local_id) ? "You" : player_id;
 }
 
 void draw() {
@@ -69,7 +72,7 @@ void draw() {
         players = new HashMap<String, Player>();
 
         // get the local id
-        String local_id = resp.get("you_are");
+        local_id = resp.get("you_are");
         players.put(local_id, new Player());
 
         // setup opponents
@@ -93,9 +96,10 @@ void draw() {
       // tells the clients cards have been played
       case "card_play":
 
-        switcher.switch_menu(new AlertMenu(resp.to_string(), holo_color, switcher.create_button_handler(menu)));
+        String alert = "";
 
         // handle all the played card entries
+        // TODO: parsing should probably get rolled in with gp_sender
         for(String k : resp.regex_get_keys(".*_to_.*")){
           // get the player ids
           String[] ids = k.split("_to_",0);
@@ -103,6 +107,16 @@ void draw() {
           Card c = cl.load_card(resp.get(k));
           // where the magic happens
           players.get(ids[1]).play_card_against(players.get(ids[0]), c);
+          // tell the player what happened
+          alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
+        }
+
+        // alert the player to what happened
+        switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
+
+        // clear all card positions
+        for(Opponent o : opponents){
+          o.get_played_against().clear();
         }
 
         gp_sender.inc_turn();

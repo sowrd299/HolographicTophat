@@ -20,9 +20,9 @@ class AlertMenu extends Menu{
 
         Rect area = new Rect(8, height/4, width-2*margin, height/2);
 
-        bg = new BackgroundButton(area, text, holo_color, null, height/24, 5, 128, 32);
+        bg = new BackgroundButton(area, text, holo_color, null, height/36, 5, 128, 32);
 
-        finished_button = new Button(
+        finished_button = new TicketButton(
             area.get_section(0.33, 0.8, 0.33, 0.15),
             "Ja",
             holo_color,
