@@ -36,9 +36,11 @@ class Player{
     /**
     Manages damage being dealt to this player
     Damage cannot result in gaining score
+    Damage cannot result in having negative score
     */
     private void take_damage(int val){
         score -= max(0, val);
+        score = max(score, 0);
     }
 
 }

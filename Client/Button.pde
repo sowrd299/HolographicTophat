@@ -62,6 +62,7 @@ class Button {
 
     protected ButtonHandler handler;
 
+    // TODO: this schould really take a box as an argument
     Button(Rect rect, String label, color c, ButtonHandler handler){
         this.r= rect;
         this.label = label;
@@ -82,11 +83,12 @@ class Button {
     void draw(){
         if(box != null) box.draw();
         // draw the label
-        if(label.length() > 0){
+        String text = get_label();
+        if(text.length() > 0){
             textFont(font, font_size);
             textAlign(CENTER);
             fill(c, 200);
-            text(get_label(), r.x + margin, r.y+ 1.5*margin, r.w - 2*margin, r.h);
+            text(text, r.x + margin, r.y+ 1.5*margin, r.w - 2*margin, r.h);
         }
     }
 

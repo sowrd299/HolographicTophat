@@ -82,7 +82,7 @@ void draw() {
           Player player = new Player();
           players.put(player_ids[i], player);
           if(player_ids[i] != local_id){
-            opponents[i] = new Opponent(player_ids[i]);
+            opponents[i] = new Opponent(player_ids[i], player);
           }
         }
 

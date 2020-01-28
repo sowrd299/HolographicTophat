@@ -56,6 +56,32 @@ Rect[] create_rects(int x, int y, int w, int h, int x_padding, int y_padding, in
 }
 
 /**
+Creats a rect that encompasses the given rectangles
+*/
+Rect create_bounding_rect(Rect[] rects, int left_padding, int right_padding, int top_padding, int bottom_padding){
+
+    int x1 = rects[0].x;
+    int y1 = rects[0].y;
+    int x2 = x1 + rects[0].w;
+    int y2 = y1 + rects[0].h;
+
+    for(int i = 1; i < rects.length; i++){
+        x1 = min(x1, rects[i].x);
+        y1 = min(y1, rects[i].y);
+        x2 = max(x1, rects[i].x + rects[i].w);
+        y2 = max(y1, rects[i].y + rects[i].h);
+    }
+
+    return new Rect(
+        x1 - left_padding,
+        y1 - top_padding,
+        x2 - x1 + left_padding + right_padding,
+        y2 - y1 + top_padding + bottom_padding
+    );
+
+}
+
+/**
 the rect that represents the entire screen
 */
 Rect SCREEN_RECT = new Rect(0,0,width,height);

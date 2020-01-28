@@ -1,5 +1,6 @@
 class MainMenu extends Menu {
 
+    private Button opponent_bg_button;
     private Button[] play_buttons; // buttons for places where the player can play buttons
     private Button send_button;
     private Opponent[] opponents;
@@ -9,6 +10,7 @@ class MainMenu extends Menu {
         super(menu_switcher, holo_color);
         this.opponents = opponents;
         this.lockin_handler = lockin_handler;
+        margin = 48;
     }
 
     void init() {
@@ -17,8 +19,9 @@ class MainMenu extends Menu {
         Hand hand = new Hand();
 
         // setup the opponent buttons
+        int title_font_size = height/36;
         play_buttons = new Button[opponents.length];
-        Rect[] rects = create_rects(32,32,width-64,124,8,8,opponents.length,1);
+        Rect[] rects = create_rects(margin,margin+title_font_size,width-2*margin,height/7,8,8,opponents.length,1);
         
         for(int i = 0; i < play_buttons.length; i++){
             // the menu for playing a card against that opponent
@@ -38,15 +41,25 @@ class MainMenu extends Menu {
             );
         };
 
+        opponent_bg_button = new BackgroundButton(
+            create_bounding_rect(rects, margin/2, margin/2, title_font_size + margin/2, margin/2),
+            ":opponent <played against>:",
+            holo_color,
+            null,
+            title_font_size,
+            5, margin, margin/2
+        );
+
         send_button = new TicketButton(new Rect(32,height-224,width-64,124), "Lock-in Action", holo_color, lockin_handler, 5, 32);
 
     }
 
     Button[] get_buttons(){
-        Button[] r = new Button[play_buttons.length+1];
+        Button[] r = new Button[play_buttons.length+2];
         r[0] = send_button;
+        r[1] = opponent_bg_button;
         for(int i = 0; i < play_buttons.length; i++){
-            r[1+i] = play_buttons[i];
+            r[2+i] = play_buttons[i];
         }
         return r;
     }
