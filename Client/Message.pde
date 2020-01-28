@@ -1,4 +1,6 @@
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /*
 This class is largely a translationg of the message class
@@ -29,6 +31,18 @@ class Message{
         }
         return root.format(-1);
 
+    }
+
+    String[] regex_get_keys(String pattern){
+        ArrayList<String> r = new ArrayList<String>();
+        Pattern p = Pattern.compile(pattern);
+        for(String k : data.keySet()){
+            if(p.matcher(k).matches()){
+                r.add(k);
+            }
+        }
+        String[] r_array = new String[r.size()];
+        return r.toArray(r_array);
     }
 
     String get(String k){

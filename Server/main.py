@@ -112,7 +112,7 @@ def main():
             type = "setup",
             you_are = client_ids[client_ind],
             other_players = ",".join(c for c in client_ids if not c == client_ids[client_ind]),
-            turn = str(match.get_turn())
+            turn = str(match.get_turn()) # tell the client where to start the turn count
         ))
         # start the thread
         Thread(target=match.manage_client, args=(c,client_ids[client_ind])).start()

@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 // Networking variables
 String server_ip = "192.168.1.65"; // the ip of the server computer
 Connection con;
@@ -11,6 +13,8 @@ MenuSwitcher switcher;
 
 // gameplay variables
 Opponent[] opponents;
+HashMap<String,Player> players; // the players, by ID
+CardLoader cl;
 
 // TOP-LEVEL CONTROL FUNCTIONS
 
@@ -19,7 +23,6 @@ void setup(){
   // setup the render
   fullScreen();
   //size(520,920);
-
 
   // connect
   con = new Connection();
@@ -30,6 +33,9 @@ void setup(){
   bg = new StarFieldBG();
   switcher = new MenuSwitcher();
   switcher.switch_menu(new Menu()); // placeholder loading menu
+
+  // setup gameplay
+  cl = new CardLoader();
 
 }
 
@@ -60,13 +66,18 @@ void draw() {
       // setups the game
       case "setup":
 
+        players = new HashMap<String, Player>();
+
         // get the local id
         String local_id = resp.get("you_are");
+        players.put(local_id, new Player());
 
         // setup opponents
         String[] player_ids = resp.get("other_players").split(",",0);
         opponents = new Opponent[player_ids.length];
         for(int i = 0; i < player_ids.length; i++){
+          Player player = new Player();
+          players.put(player_ids[i], player);
           if(player_ids[i] != local_id){
             opponents[i] = new Opponent(player_ids[i]);
           }
@@ -83,6 +94,17 @@ void draw() {
       case "card_play":
 
         switcher.switch_menu(new AlertMenu(resp.to_string(), holo_color, switcher.create_button_handler(menu)));
+
+        // handle all the played card entries
+        for(String k : resp.regex_get_keys(".*_to_.*")){
+          // get the player ids
+          String[] ids = k.split("_to_",0);
+          // get the card played
+          Card c = cl.load_card(resp.get(k));
+          // where the magic happens
+          players.get(ids[1]).play_card_against(players.get(ids[0]), c);
+        }
+
         gp_sender.inc_turn();
       
     }
