@@ -84,4 +84,6 @@ Rect create_bounding_rect(Rect[] rects, int left_padding, int right_padding, int
 /**
 the rect that represents the entire screen
 */
-Rect SCREEN_RECT = new Rect(0,0,width,height);
+Rect get_screen_rect(){
+    return new Rect(0,0,width,height);
+}

@@ -4,24 +4,22 @@ class MainMenu extends Menu {
     private Button[] play_buttons; // buttons for places where the player can play buttons
     private Button send_button;
     private Opponent[] opponents;
+    private Hand hand;
     private ButtonHandler lockin_handler;
 
-    MainMenu(Opponent[] opponents, MenuSwitcher menu_switcher, ButtonHandler lockin_handler, color holo_color){
+    MainMenu(Opponent[] opponents, Hand hand, MenuSwitcher menu_switcher, ButtonHandler lockin_handler, color holo_color){
         super(menu_switcher, holo_color);
         this.opponents = opponents;
+        this.hand = hand;
         this.lockin_handler = lockin_handler;
         margin = 48;
     }
 
     void init() {
 
-        // testing hand and play position
-        Hand hand = new Hand();
-
         // setup the opponent buttons
-        int title_font_size = height/36;
         play_buttons = new Button[opponents.length];
-        Rect[] rects = create_rects(margin,margin+title_font_size,width-2*margin,height/7,8,8,opponents.length,1);
+        Rect[] rects = create_rects(margin,margin+font_size,width-2*margin,height/7,8,8,opponents.length,1);
         
         for(int i = 0; i < play_buttons.length; i++){
             // the menu for playing a card against that opponent
@@ -42,11 +40,11 @@ class MainMenu extends Menu {
         };
 
         opponent_bg_button = new BackgroundButton(
-            create_bounding_rect(rects, margin/2, margin/2, title_font_size + margin/2, margin/2),
+            create_bounding_rect(rects, margin/2, margin/2, font_size + margin/2, margin/2),
             ":opponent <played against>:",
             holo_color,
             null,
-            title_font_size,
+            font_size,
             5, margin, margin/2
         );
 

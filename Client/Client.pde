@@ -11,11 +11,18 @@ color holo_color;
 Menu menu;
 MenuSwitcher switcher;
 
-// gameplay variables
+// gameplay variables for players
 Opponent[] opponents;
 String local_id;
 HashMap<String,Player> players; // the players, by ID
+
+// gameplay variables for cards
+Hand hand;
+Hand job_hand;
 CardLoader cl;
+
+// gameplay variables for jobs
+PlayPosition job_position;
 
 // TOP-LEVEL CONTROL FUNCTIONS
 
@@ -37,6 +44,20 @@ void setup(){
 
   // setup gameplay
   cl = new CardLoader();
+  job_position = new PlayPosition();
+
+  // testing hand
+  hand = new Hand();
+  hand.add_card(new ManeuverCard("Do as Mantis"));
+  hand.add_card(new ManeuverCard("Relay Access"));
+  hand.add_card(new ManeuverCard("Arcus Ar"));
+  hand.add_card(new ManeuverCard("Call the Navosc"));
+
+  // testing job hand
+  job_hand = new Hand();
+  job_hand.add_card(new JobCard("Patient Stalking"));
+  job_hand.add_card(new JobCard("Club Infiltration"));
+  job_hand.add_card(new JobCard("Assassination in Nightlife"));
 
 }
 
@@ -48,7 +69,7 @@ void mousePressed() {
 }
 
 /**
-Returns what to call the given player
+Returns what to call the given player in text
 */
 String player_name(String player_id){
   return player_id.equals(local_id) ? "You" : player_id;
@@ -89,8 +110,14 @@ void draw() {
         // gameplay connection
         gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
         
-        // go into the game menu
-        switcher.switch_menu(new MainMenu(opponents, switcher, gp_sender, holo_color));
+        // go into the game menu; currently starts by choosing your first job
+        switcher.switch_menu( new JobMenu(
+          job_hand,
+          players.get(local_id).get_job(),
+          job_position,
+          switcher.create_button_handler(new MainMenu(opponents, hand, switcher, gp_sender, holo_color)),
+          holo_color
+        ) );
         break;
 
       // tells the clients cards have been played
@@ -149,8 +176,10 @@ class MenuSwitcher{
   }
 
   void switch_menu(Menu m) {
+    System.out.println("Switching menu...");
     menu = m;
     menu.init();
+    System.out.println("...switched!");
   }
 
   /**

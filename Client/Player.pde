@@ -7,11 +7,12 @@ class Player{
     private int progress; // the player's current progress on their current job
     private int score; // the player's current score
     private Card defense; // the card the player is currently playing as their defense
+    private Card job; // the job the player is currently on
 
     Player(){
         progress = 0;
         score = 0;
-        defense = new Card("The-No-Card-Here-Card",0,0,0);
+        defense = new ManeuverCard("The-No-Card-Here-Card",0,0,0);
     }
 
     int get_progress(){
@@ -20,6 +21,10 @@ class Player{
 
     int get_score(){
         return score;
+    }
+
+    Card get_job(){
+        return job;
     }
 
     /**

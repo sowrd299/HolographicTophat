@@ -6,25 +6,11 @@ A class for representing an in-game card
 class Card {
 
     private String id;
-    private HashMap<String, Integer> stats; // the stats of the card
+    protected HashMap<String, Integer> stats; // the stats of the card
 
     Card(String id){
         this.id = id;
         stats = new HashMap<String, Integer>();
-
-        // set the default stats
-        stats.put("cunning", 3);
-        stats.put("force", 2);
-        stats.put("stealth", 1);
-    }
-
-    Card(String id, int cunning, int force, int stealth){
-        this.id = id;
-        stats = new HashMap<String, Integer>();
-
-        stats.put("cunning", cunning);
-        stats.put("force", force);
-        stats.put("stealth", stealth);
     }
 
     String get_id(){
@@ -40,6 +26,37 @@ class Card {
   
 }
 
+class ManeuverCard extends Card {
+
+    ManeuverCard(String id) {
+        super(id);
+        // set the default stats
+        stats.put("cunning", 3);
+        stats.put("force", 2);
+        stats.put("stealth", 1);
+    }
+
+    ManeuverCard(String id, int cunning, int force, int stealth){
+        super(id);
+        stats = new HashMap<String, Integer>();
+
+        stats.put("cunning", cunning);
+        stats.put("force", force);
+        stats.put("stealth", stealth);
+    }
+}
+
+class JobCard extends Card {
+
+    JobCard(String id){
+        super(id);
+        stats.put("cunning", 8);
+        stats.put("reward", 3);
+        stats.put("patience",4);
+    }
+
+}
+
 /**
 A class for loading cards
 */
@@ -47,7 +64,7 @@ class CardLoader {
 
     Card load_card(String id){
         // placeholder implementation
-        return new Card(id);
+        return new ManeuverCard(id);
     }
 
 }
