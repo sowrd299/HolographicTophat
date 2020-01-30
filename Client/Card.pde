@@ -1,5 +1,13 @@
 import java.util.HashMap;
 
+// the names of the stats
+final String STAT_CUNNING = "cunning";
+final String STAT_FORCE = "force";
+final String STAT_STEALTH = "stealth";
+
+final String STAT_REWARD = "reward";
+final String STAT_PATIENCE = "patience";
+
 /**
 A class for representing an in-game card
 */
@@ -31,18 +39,18 @@ class ManeuverCard extends Card {
     ManeuverCard(String id) {
         super(id);
         // set the default stats
-        stats.put("cunning", 3);
-        stats.put("force", 2);
-        stats.put("stealth", 1);
+        stats.put(STAT_CUNNING, 3);
+        stats.put(STAT_FORCE, 2);
+        stats.put(STAT_STEALTH, 1);
     }
 
     ManeuverCard(String id, int cunning, int force, int stealth){
         super(id);
         stats = new HashMap<String, Integer>();
 
-        stats.put("cunning", cunning);
-        stats.put("force", force);
-        stats.put("stealth", stealth);
+        stats.put(STAT_CUNNING, cunning);
+        stats.put(STAT_FORCE, force);
+        stats.put(STAT_STEALTH, stealth);
     }
 }
 
@@ -50,9 +58,9 @@ class JobCard extends Card {
 
     JobCard(String id){
         super(id);
-        stats.put("cunning", 8);
-        stats.put("reward", 3);
-        stats.put("patience",4);
+        stats.put(STAT_CUNNING, 8);
+        stats.put(STAT_REWARD, 3);
+        stats.put(STAT_PATIENCE,4);
     }
 
 }
@@ -62,9 +70,29 @@ A class for loading cards
 */
 class CardLoader {
 
+    private HashMap<String, Card> cards;
+
+    CardLoader(){
+        cards = new HashMap<String, Card>();
+        
+        // testing maneuvers
+        register(new ManeuverCard("Do as Mantis"));
+        register(new ManeuverCard("Relay Access"));
+        register(new ManeuverCard("Arcus Ar"));
+        register(new ManeuverCard("Call the Navosc"));
+
+        // testing jobs
+        register(new JobCard("Patient Stalking"));
+        register(new JobCard("Club Infiltration"));
+        register(new JobCard("Assassination in Nightlife"));
+    }
+
+    void register(Card card){
+        cards.put(card.get_id(), card);
+    }
+
     Card load_card(String id){
-        // placeholder implementation
-        return new ManeuverCard(id);
+        return cards.get(id);
     }
 
 }

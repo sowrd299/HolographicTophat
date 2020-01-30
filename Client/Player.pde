@@ -27,15 +27,17 @@ class Player{
         return job;
     }
 
+    // PLAYING MANEUVERS
+
     /**
     Manages what happens when a card is played against a player
     */
     void play_card_against(Player played_by, Card c){
         // decrement progress
-        progress -= c.get_stat("cunning");
+        progress -= c.get_stat(STAT_CUNNING);
         // deal damage
-        take_damage(c.get_stat("force") - defense.get_stat("stealth"));
-        played_by.take_damage(defense.get_stat("force") - c.get_stat("stealth"));
+        take_damage(c.get_stat(STAT_FORCE) - defense.get_stat(STAT_STEALTH));
+        played_by.take_damage(defense.get_stat(STAT_FORCE) - c.get_stat(STAT_STEALTH));
     }
 
     /**
@@ -46,6 +48,39 @@ class Player{
     private void take_damage(int val){
         score -= max(0, val);
         score = max(score, 0);
+    }
+
+    // PLAYING JOBS
+
+    /**
+    Sets the player's job to the given card
+    */
+    void play_job(Card job){
+        this.job = job;
+        progress += job.get_stat(STAT_CUNNING);
+    }
+
+    /**
+    Handles the play continuing their current job
+    */
+    void continue_job(){
+        progress += job.get_stat(STAT_PATIENCE);
+    }
+
+    /**
+    Handles the end of a job
+    returns wether or not that job succeeded
+    */
+    boolean finish_job(){
+        boolean success = false;
+        if(job != null){
+            if(progress >= 0){
+                score += job.get_stat(STAT_REWARD);
+                success = true;
+            }
+        }
+        progress = 0;
+        return success;
     }
 
 }

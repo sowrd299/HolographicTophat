@@ -74,7 +74,7 @@ class Match():
                     print("...is card play message")
 
                     # compile card plays
-                    for k in msg.regex_get_keys("{0}_to_".format(player_id)):
+                    for k in msg.regex_get_keys("{0}_".format(player_id)):
                         self.collected_args[k] = msg.get(k)
 
                     # update lockins

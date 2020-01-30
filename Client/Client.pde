@@ -9,6 +9,7 @@ GameplaySender gp_sender;
 StarFieldBG bg;
 color holo_color;
 Menu menu;
+Menu main_menu;
 MenuSwitcher switcher;
 
 // gameplay variables for players
@@ -48,24 +49,24 @@ void setup(){
 
   // testing hand
   hand = new Hand();
-  hand.add_card(new ManeuverCard("Do as Mantis"));
-  hand.add_card(new ManeuverCard("Relay Access"));
-  hand.add_card(new ManeuverCard("Arcus Ar"));
-  hand.add_card(new ManeuverCard("Call the Navosc"));
+  hand.add_card(cl.load_card("Do as Mantis"));
+  hand.add_card(cl.load_card("Relay Access"));
+  hand.add_card(cl.load_card("Arcus Ar"));
+  hand.add_card(cl.load_card("Call the Navosc"));
 
   // testing job hand
   job_hand = new Hand();
-  job_hand.add_card(new JobCard("Patient Stalking"));
-  job_hand.add_card(new JobCard("Club Infiltration"));
-  job_hand.add_card(new JobCard("Assassination in Nightlife"));
+  job_hand.add_card(cl.load_card("Patient Stalking"));
+  job_hand.add_card(cl.load_card("Club Infiltration"));
+  job_hand.add_card(cl.load_card("Assassination in Nightlife"));
 
 }
 
-// when the player touches the screen
+/**
+Handle the player clicking the screen
+*/
 void mousePressed() {
-
   menu.click(mouseX, mouseY);
-
 }
 
 /**
@@ -75,9 +76,30 @@ String player_name(String player_id){
   return player_id.equals(local_id) ? "You" : player_id;
 }
 
+/**
+switches to a new jobs menu
+*/
+void switch_to_jobs_menu(){
+  switcher.switch_menu( new JobMenu(
+    job_hand,
+    players.get(local_id).get_job(),
+    job_position,
+    new ButtonHandler() {
+      public void on_click(){
+        switcher.switch_menu(main_menu);
+        gp_sender.send_job_message(true);
+      }
+    },
+    holo_color
+  ) );
+}
+
+/**
+THE MAIN LOOP
+*/
 void draw() {
 
-  // actually draw the game
+  // render onto the screen
   bg.draw();
   menu.draw();
 
@@ -87,7 +109,7 @@ void draw() {
     System.out.println("Recieved message: "+resp.to_string());
     switch (resp.get("type")) {
 
-      // setups the game
+      // SETS UP THE GAME 
       case "setup":
 
         players = new HashMap<String, Player>();
@@ -111,41 +133,74 @@ void draw() {
         gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
         
         // go into the game menu; currently starts by choosing your first job
-        switcher.switch_menu( new JobMenu(
-          job_hand,
-          players.get(local_id).get_job(),
-          job_position,
-          switcher.create_button_handler(new MainMenu(opponents, hand, switcher, gp_sender, holo_color)),
-          holo_color
-        ) );
+        main_menu = new MainMenu(opponents, hand, switcher, gp_sender, holo_color);
+        switch_to_jobs_menu();
         break;
 
-      // tells the clients cards have been played
+      // TELL THE CLIENT CARDS HAVE BEEN PLAYED 
       case "card_play":
 
         String alert = "";
+        boolean jobs_next = false; // if the next thing to happen is playing jobs
 
-        // handle all the played card entries
+        // HANDLE PLAYING MANEUVERS AGAINST OTHER PLAYERS
         // TODO: parsing should probably get rolled in with gp_sender
         for(String k : resp.regex_get_keys(".*_to_.*")){
-          // get the player ids
+          // get the player ids for who played the card on who
           String[] ids = k.split("_to_",0);
           // get the card played
           Card c = cl.load_card(resp.get(k));
-          // where the magic happens
+          // actually play the card
           players.get(ids[1]).play_card_against(players.get(ids[0]), c);
+          // we now know the next step will be playing jobs
+          jobs_next = true;
           // tell the player what happened
           alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
         }
 
-        // alert the player to what happened
+        // HANDLE PLAYING AND CONTINUING JOBS
+        for(String id : players.keySet()){
+          // continuing jobs
+          if("true".equals(resp.get(id + "_continue_job"))){
+            players.get(id).continue_job();
+            alert += player_name(id) + " continued the job " + players.get(id).get_job().get_id() + ".\n";
+          }
+          // playing new jobs
+          String card_id = resp.get(id + "_job");
+          if(card_id != null){
+            Card card = cl.load_card(card_id);
+            if(card != null){
+              // wrap up the last job
+              boolean success = players.get(id).finish_job();
+              if(players.get(id).get_job() != null){
+                alert += player_name(id) + (success ? " successfully compleated " : " failed ") + " the job " + players.get(id).get_job().get_id() + ".\n";
+              }
+              // actually play the new job
+              players.get(id).play_job(card);
+              alert += player_name(id) + " began the job " + players.get(id).get_job().get_id() + ".\n";
+            }
+          }
+        }
+
+        // leave any current menu
+        switcher.switch_menu(main_menu);
+
+        // go to the jobs menu if we should
+        if(jobs_next){
+          switch_to_jobs_menu();
+        }
+
+        // alert the user to what happened
+        // TODO: this can preserve a menu that shouldn't be preverve sometimes
         switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
 
         // clear all card positions
         for(Opponent o : opponents){
           o.get_played_against().clear();
         }
+        job_position.clear();
 
+        // increment the turn count
         gp_sender.inc_turn();
       
     }
@@ -209,9 +264,7 @@ class GameplaySender implements ButtonHandler{
     this.local_id = local_id;
   }
 
-  Message create_play_message(){
-    Message r = new Message("card_play");
-    r.put("turn",str(turn));
+  Message populate_play_message(Message r){
     for(Opponent o : opponents){
       Card c = o.get_played_against().get();
       if(c != null) {
@@ -221,17 +274,45 @@ class GameplaySender implements ButtonHandler{
     return r;
   }
 
+  Message populate_basic_message(Message r, boolean lockin){
+    r.put("turn",str(turn));
+    r.put("lockin",str(lockin));
+    return r;
+  }
+
   /**
   Sends a message to the server about cards you have played
   takes if the player is locking in their turn
   returns the success state
   */
   boolean send_play_message(boolean lockin){
-    Message r = create_play_message();
-    r.put("lockin",str(lockin));
+    Message r = populate_play_message(new Message("card_play"));
+    populate_basic_message(r, lockin);
     return con.send(r);
   }
 
+
+  Message populate_job_message(Message r){
+    Card job = job_position.get();
+    r.put(local_id + "_job", job != null ? job.get_id() : "");
+    r.put(local_id + "_continue_job", str(job == null));
+    return r;
+  }
+
+  /**
+  Sends a message to the server about cards you have played
+  takes if the player is locking in their turn
+  returns the success state
+  */
+  boolean send_job_message(boolean lockin){
+    Message r = populate_job_message(new Message("card_play"));
+    populate_basic_message(r, lockin);
+    return con.send(r);
+  }
+
+  /**
+  Allows this to be used a a button handler
+  */
   void on_click(){
     send_play_message(true);
   }
