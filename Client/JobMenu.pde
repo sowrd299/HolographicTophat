@@ -67,6 +67,7 @@ class JobMenu extends Menu {
         }
 
         void on_click(){
+            job_hand.remove_card(card);
             position.play_card(card);
             when_finished.on_click();
         }

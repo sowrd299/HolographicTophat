@@ -1,14 +1,14 @@
 /**
-Represents an other player in the game
+Represents a player in the game
 For use organizing data for the UI
 */
-class Opponent{
+class PlayerUI{
 
     private String id;
     private PlayPosition played_against; // the card played against this player
     private Player player;
 
-    Opponent(String id, Player player){
+    PlayerUI(String id, Player player){
         this.id = id;
         played_against = new PlayPosition();
         this.player = player;
@@ -29,11 +29,11 @@ class Opponent{
 }
 
 /**
-A class to render the oppoent as a button
+A class to render the player as a button
 */
-class OpponentButton extends CompositButton{
+class PlayerUIButton extends CompositButton{
     
-    Opponent opponent;
+    PlayerUI opponent;
 
     private class MainButton extends TicketButton {
 
@@ -69,7 +69,7 @@ class OpponentButton extends CompositButton{
     private MainButton main_button;
     private ScoreButton score_button;
 
-    OpponentButton(Opponent opponent, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+    PlayerUIButton(PlayerUI opponent, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
         super(rect, "", c, handler);
         this.opponent = opponent;
 

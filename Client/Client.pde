@@ -13,8 +13,10 @@ Menu main_menu;
 MenuSwitcher switcher;
 
 // gameplay variables for players
-Opponent[] opponents;
-String local_id;
+// TODO: this is a bit redundent
+PlayerUI[] opponents;
+PlayerUI local_player;
+String local_id; // DEPRICATED
 HashMap<String,Player> players; // the players, by ID
 
 // gameplay variables for cards
@@ -116,16 +118,18 @@ void draw() {
 
         // get the local id
         local_id = resp.get("you_are");
-        players.put(local_id, new Player());
+        Player lp = new Player();
+        players.put(local_id, lp);
+        local_player = new PlayerUI(local_id, lp);
 
         // setup opponents
         String[] player_ids = resp.get("other_players").split(",",0);
-        opponents = new Opponent[player_ids.length];
+        opponents = new PlayerUI[player_ids.length];
         for(int i = 0; i < player_ids.length; i++){
           Player player = new Player();
           players.put(player_ids[i], player);
           if(player_ids[i] != local_id){
-            opponents[i] = new Opponent(player_ids[i], player);
+            opponents[i] = new PlayerUI(player_ids[i], player);
           }
         }
 
@@ -133,7 +137,7 @@ void draw() {
         gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
         
         // go into the game menu; currently starts by choosing your first job
-        main_menu = new MainMenu(opponents, hand, switcher, gp_sender, holo_color);
+        main_menu = new MainMenu(opponents, local_player, hand, switcher, gp_sender, holo_color);
         switch_to_jobs_menu();
         break;
 
@@ -195,7 +199,7 @@ void draw() {
         switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
 
         // clear all card positions
-        for(Opponent o : opponents){
+        for(PlayerUI o : opponents){
           o.get_played_against().clear();
         }
         job_position.clear();
@@ -253,11 +257,11 @@ Doubles as a handler for "lock-in" buttons
 class GameplaySender implements ButtonHandler{
 
   Connection con;
-  Opponent[] opponents;
+  PlayerUI[] opponents;
   String local_id;
   int turn;
 
-  GameplaySender(Connection con, String local_id, Opponent[] opponents, int starting_turn){
+  GameplaySender(Connection con, String local_id, PlayerUI[] opponents, int starting_turn){
     this.turn = starting_turn;
     this.con = con;
     this.opponents = opponents;
@@ -265,7 +269,7 @@ class GameplaySender implements ButtonHandler{
   }
 
   Message populate_play_message(Message r){
-    for(Opponent o : opponents){
+    for(PlayerUI o : opponents){
       Card c = o.get_played_against().get();
       if(c != null) {
         r.put(local_id + "_to_" + o.get_id(),c.get_id());

@@ -68,7 +68,7 @@ class Button {
         this.label = label;
         this.margin = 16;
 
-        font = loadFont("TlwgTypist-48.vlw");
+        font = loadFont("TlwgTypist-Bold-48.vlw");
         this.handler = handler;
         // create the font color
         colorMode(HSB);
