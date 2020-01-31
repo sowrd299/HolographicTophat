@@ -8,17 +8,63 @@ final String STAT_STEALTH = "stealth";
 final String STAT_REWARD = "reward";
 final String STAT_PATIENCE = "patience";
 
+final String STAT_AGENTS = "agents";
+
+/**
+A class to represent a value on a card
+A stat can be comprised on mutliple sub-values
+*/
+class Stat {
+
+    int value;
+    private HashMap<String, Stat> components;
+
+    Stat(int value){
+        this.value = value;
+    }
+
+    /**
+    Returns the total of all components, including the current node
+    */
+    int get(){
+        int r = value;
+        for(String k : components.keySet()){
+           r += components[k].get();
+        }
+        return r;
+    }
+
+    /**
+    Returns an array of all the name of components
+    */
+    String[] get_components(){
+        String[] r = new String[components.size()];
+        components.keySet().toArray(r);
+        return r;
+    }
+
+    Stat get_component(String stat){
+        if(components.containsKey(stat)){
+            return this.components.get(stat);
+        }else{
+            return new Stat(0);
+        }
+    }
+
+}
+
 /**
 A class for representing an in-game card
 */
 class Card {
 
     private String id;
-    protected HashMap<String, Integer> stats; // the stats of the card
+    protected HashMap<String, Stat> stats; // the stats of the card
 
     Card(String id){
         this.id = id;
         stats = new HashMap<String, Integer>();
+        list_stats = new HashMap<String, HashMap<String, Integer>>();
     }
 
     String get_id(){
@@ -30,6 +76,10 @@ class Card {
     */
     int get_stat(String stat) {
         return stats.get(stat);
+    }
+
+    HashMap<String, Integer> get_list_stat(String stat){
+        return list_stats.get(stat);
     }
   
 }
