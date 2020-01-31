@@ -12,7 +12,7 @@ class Player{
     Player(){
         progress = 0;
         score = 0;
-        defense = new ManeuverCard("The-No-Card-Here-Card",0,0,0);
+        clear_defense();
     }
 
     int get_progress(){
@@ -48,6 +48,23 @@ class Player{
     private void take_damage(int val){
         score -= max(0, val);
         score = max(score, 0);
+    }
+
+    // DEFENDING WITH MANEUVERS
+
+    /**
+    Manage what happens when a player sets a new defense
+    */
+    void play_defense(Card c){
+        defense = c;
+        progress += defense.get_stat(STAT_CUNNING);
+    }
+
+    /**
+    To be called after a card's defense seases to be relivant
+    */
+    void clear_defense(){
+        defense = new ManeuverCard("The-No-Card-Here-Card",0,0,0);
     }
 
     // PLAYING JOBS

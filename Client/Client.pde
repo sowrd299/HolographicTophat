@@ -74,6 +74,7 @@ void mousePressed() {
 /**
 Returns what to call the given player in text
 */
+// TODO: Should probably be rolled into the PlayerUI class
 String player_name(String player_id){
   return player_id.equals(local_id) ? "You" : player_id;
 }
@@ -147,6 +148,18 @@ void draw() {
         String alert = "";
         boolean jobs_next = false; // if the next thing to happen is playing jobs
 
+        // HANDLE PLAYING MANEUVERS AS DEFENSE
+        // for the rules to work, this must happen before playing maneuvers
+        for(String id : players.keySet()){
+          String card_id = resp.get(id + "_defense");
+          if(card_id != null){
+            Card c = cl.load_card(card_id);
+            players.get(id).play_defense(c);
+            alert += player_name(id) + " defended with " + c.get_id() + "\n.";
+            jobs_next = true;
+          }
+        }
+
         // HANDLE PLAYING MANEUVERS AGAINST OTHER PLAYERS
         // TODO: parsing should probably get rolled in with gp_sender
         for(String k : resp.regex_get_keys(".*_to_.*")){
@@ -160,6 +173,11 @@ void draw() {
           jobs_next = true;
           // tell the player what happened
           alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
+        }
+
+        // NOW THAT WE DON'T NEED DEFENSE ANYMORE, CLEAR THEM
+        for(String id : players.keySet()){
+          players.get(id).clear_defense();
         }
 
         // HANDLE PLAYING AND CONTINUING JOBS
@@ -199,9 +217,11 @@ void draw() {
         switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
 
         // clear all card positions
+        // TODO: doing this exhaustively is annoying
         for(PlayerUI o : opponents){
           o.get_played_against().clear();
         }
+        local_player.get_played_against().clear();
         job_position.clear();
 
         // increment the turn count
@@ -268,19 +288,26 @@ class GameplaySender implements ButtonHandler{
     this.local_id = local_id;
   }
 
+  Message populate_basic_message(Message r, boolean lockin){
+    r.put("turn",str(turn));
+    r.put("lockin",str(lockin));
+    return r;
+  }
+
   Message populate_play_message(Message r){
+    // cards played against opponents
     for(PlayerUI o : opponents){
       Card c = o.get_played_against().get();
       if(c != null) {
         r.put(local_id + "_to_" + o.get_id(),c.get_id());
       }
     }
-    return r;
-  }
-
-  Message populate_basic_message(Message r, boolean lockin){
-    r.put("turn",str(turn));
-    r.put("lockin",str(lockin));
+    // the defense cards
+    Card defense = local_player.get_played_against().get();
+    if(defense != null){
+      r.put(local_id + "_defense", defense.get_id());
+    }
+    // cleanup
     return r;
   }
 
