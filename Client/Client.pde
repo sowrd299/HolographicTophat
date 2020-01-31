@@ -134,6 +134,11 @@ void draw() {
           }
         }
 
+        // draw starting hands
+        for(String id : players.keySet()){
+          players.get(id).draw_cards(6);
+        }
+
         // gameplay connection
         gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
         
@@ -155,7 +160,8 @@ void draw() {
           if(card_id != null){
             Card c = cl.load_card(card_id);
             players.get(id).play_defense(c);
-            alert += player_name(id) + " defended with " + c.get_id() + "\n.";
+            players.get(id).played_from_hand(c);
+            alert += player_name(id) + " defended with " + c.get_id() + ".\n";
             jobs_next = true;
           }
         }
@@ -169,6 +175,7 @@ void draw() {
           Card c = cl.load_card(resp.get(k));
           // actually play the card
           players.get(ids[1]).play_card_against(players.get(ids[0]), c);
+          players.get(ids[0]).played_from_hand(c);
           // we now know the next step will be playing jobs
           jobs_next = true;
           // tell the player what happened
@@ -207,8 +214,12 @@ void draw() {
         // leave any current menu
         switcher.switch_menu(main_menu);
 
-        // go to the jobs menu if we should
+        // HAND THE START OF A NEW ROUND
+        // draw cards and go to the jobs menu
         if(jobs_next){
+          for(String id : players.keySet()){
+            players.get(id).draw_cards(3);
+          }
           switch_to_jobs_menu();
         }
 
@@ -226,6 +237,8 @@ void draw() {
 
         // increment the turn count
         gp_sender.inc_turn();
+
+        break;
       
     }
   }

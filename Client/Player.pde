@@ -6,12 +6,15 @@ class Player{
 
     private int progress; // the player's current progress on their current job
     private int score; // the player's current score
+    private int hand_size; // tracks the number of cards in this player's hand
+
     private Card defense; // the card the player is currently playing as their defense
     private Card job; // the job the player is currently on
 
     Player(){
         progress = 0;
         score = 0;
+        hand_size = 0;
         clear_defense();
     }
 
@@ -23,8 +26,31 @@ class Player{
         return score;
     }
 
+    int get_hand_size(){
+        return hand_size;
+    }
+
     Card get_job(){
         return job;
+    }
+
+
+    // HAND MANAGEMENT
+
+    /**
+    Adds cards to the player's hand
+    Takes the number of cards drawn
+    */
+    void draw_cards(int num){
+        hand_size += num;
+    }
+
+    /**
+    Manages a card leaves the player's hand
+    Takes the card played
+    */
+    void played_from_hand(Card c){
+        hand_size -= 1;
     }
 
     // PLAYING MANEUVERS

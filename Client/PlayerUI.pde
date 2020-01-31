@@ -61,6 +61,7 @@ class PlayerUIButton extends CompositButton{
         String get_label() {
             String r = "Score: " + Integer.toString(opponent.get_player().get_score());
             r += " | Progress: " + Integer.toString(opponent.get_player().get_progress());
+            r += " | Hand: " + Integer.toString(opponent.get_player().get_hand_size());
             return r;
         }
 
@@ -75,7 +76,7 @@ class PlayerUIButton extends CompositButton{
 
         // set up the buttons
         main_button = new MainButton(rect.get_section(0,0,1,0.63), c, null, stroke_weight, corner_size);
-        score_button = new ScoreButton(rect.get_section(0.1,0.64,0.66,0.33), c, null, stroke_weight, corner_size);
+        score_button = new ScoreButton(rect.get_section(0.1,0.64,0.8,0.33), c, null, stroke_weight, corner_size);
     }
 
     Button[] get_buttons(){
