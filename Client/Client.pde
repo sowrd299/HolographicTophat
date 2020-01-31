@@ -49,13 +49,6 @@ void setup(){
   cl = new CardLoader();
   job_position = new PlayPosition();
 
-  // testing hand
-  hand = new Hand();
-  hand.add_card(cl.load_card("Do as Mantis"));
-  hand.add_card(cl.load_card("Relay Access"));
-  hand.add_card(cl.load_card("Arcus Ar"));
-  hand.add_card(cl.load_card("Call the Navosc"));
-
   // testing job hand
   job_hand = new Hand();
   job_hand.add_card(cl.load_card("Patient Stalking"));
@@ -117,11 +110,19 @@ void draw() {
 
         players = new HashMap<String, Player>();
 
-        // get the local id
+        // the testing deck
+        Deck deck = new Deck();
+        deck.add_card(cl.load_card("Do as Mantis"),5);
+        deck.add_card(cl.load_card("Relay Access"),5);
+        deck.add_card(cl.load_card("Arcus Ar"),5);
+        deck.add_card(cl.load_card("Call the Navosc"),5);
+
+        // setup the local player
         local_id = resp.get("you_are");
-        Player lp = new Player();
+        LocalPlayer lp = new LocalPlayer(deck);
         players.put(local_id, lp);
         local_player = new PlayerUI(local_id, lp);
+        hand = lp.get_hand();
 
         // setup opponents
         String[] player_ids = resp.get("other_players").split(",",0);

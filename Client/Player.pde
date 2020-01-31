@@ -127,3 +127,35 @@ class Player{
     }
 
 }
+
+/**
+Adds in code for handling hidden gamestates of that player
+*/
+class LocalPlayer extends Player {
+
+    private Hand hand;
+    private Deck deck;
+
+    LocalPlayer(Deck deck){
+        super();
+        hand = new Hand();
+        this.deck = deck;
+    }
+
+    Hand get_hand(){
+        return hand;
+    }
+
+    Deck get_deck(){
+        return deck;
+    }
+
+    void draw_cards(int num){
+        super.draw_cards(num);
+        for(int i = 0; i < num; i++){
+            Card c = deck.draw_card();
+            hand.add_card(c);
+        }
+    }
+    
+}
