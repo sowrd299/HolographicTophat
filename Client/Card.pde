@@ -1,6 +1,8 @@
 import java.util.HashMap;
 
 // the names of the stats
+final String STAT_AGENTS = "agents";
+
 final String STAT_CUNNING = "cunning";
 final String STAT_FORCE = "force";
 final String STAT_STEALTH = "stealth";
@@ -8,7 +10,8 @@ final String STAT_STEALTH = "stealth";
 final String STAT_REWARD = "reward";
 final String STAT_PATIENCE = "patience";
 
-final String STAT_AGENTS = "agents";
+// the names of agents with special roles
+final String AGENT_ALL_PURPOSE = "Elite";
 
 /**
 A class to represent a value on a card
@@ -23,13 +26,17 @@ class Stat {
         this.value = value;
     }
 
+    Stat(){
+        this(0);
+    }
+
     /**
     Returns the total of all components, including the current node
     */
     int get(){
         int r = value;
         for(String k : components.keySet()){
-           r += components[k].get();
+           r += components.get(k).get();
         }
         return r;
     }
@@ -37,18 +44,27 @@ class Stat {
     /**
     Returns an array of all the name of components
     */
-    String[] get_components(){
+    String[] get_stats(){
         String[] r = new String[components.size()];
         components.keySet().toArray(r);
         return r;
     }
 
-    Stat get_component(String stat){
+    Stat get_stat(String stat){
         if(components.containsKey(stat)){
             return this.components.get(stat);
         }else{
+            // System.out.println("Tried to access stat "+stat+" that does not exist!");
             return new Stat(0);
         }
+    }
+
+    void set_stat(String stat, int val){
+        components.put(stat, new Stat(val));
+    }
+
+    void set_stat(String stat, Stat s){
+        components.put(stat, s);
     }
 
 }
@@ -59,12 +75,11 @@ A class for representing an in-game card
 class Card {
 
     private String id;
-    protected HashMap<String, Stat> stats; // the stats of the card
+    protected Stat stats; // the stats of the card
 
     Card(String id){
         this.id = id;
-        stats = new HashMap<String, Integer>();
-        list_stats = new HashMap<String, HashMap<String, Integer>>();
+        stats = new Stat(0);
     }
 
     String get_id(){
@@ -75,42 +90,55 @@ class Card {
     Returns the value of the given stat
     */
     int get_stat(String stat) {
-        return stats.get(stat);
+        return stats.get_stat(stat).get();
     }
 
-    HashMap<String, Integer> get_list_stat(String stat){
-        return list_stats.get(stat);
+    Stat get_stat_object(String stat){
+        return stats.get_stat(stat);
     }
   
 }
 
 class ManeuverCard extends Card {
 
-    ManeuverCard(String id) {
-        super(id);
-        // set the default stats
-        stats.put(STAT_CUNNING, 3);
-        stats.put(STAT_FORCE, 2);
-        stats.put(STAT_STEALTH, 1);
-    }
-
     ManeuverCard(String id, int cunning, int force, int stealth){
         super(id);
-        stats = new HashMap<String, Integer>();
 
-        stats.put(STAT_CUNNING, cunning);
-        stats.put(STAT_FORCE, force);
-        stats.put(STAT_STEALTH, stealth);
+        stats.set_stat(STAT_CUNNING, cunning);
+        stats.set_stat(STAT_FORCE, force);
+        stats.set_stat(STAT_STEALTH, stealth);
+
+        // placeholder team of agents
+        Stat agents = new Stat();
+        agents.set_stat("Sailor",2);
+        stats.set_stat(STAT_AGENTS, agents);
     }
+
+    ManeuverCard(String id){
+        this(id, 3, 2, 1);
+    }
+
 }
 
 class JobCard extends Card {
 
     JobCard(String id){
         super(id);
-        stats.put(STAT_CUNNING, 8);
-        stats.put(STAT_REWARD, 3);
-        stats.put(STAT_PATIENCE,4);
+        stats.set_stat(STAT_CUNNING, 8);
+        stats.set_stat(STAT_REWARD, 3);
+        stats.set_stat(STAT_PATIENCE,4);
+    }
+
+}
+
+class BossCard extends Card {
+
+    BossCard(String id){
+        super(id);
+        Stat agents = new Stat();
+        agents.set_stat("Sailor", 4);
+        agents.set_stat(AGENT_ALL_PURPOSE,2);
+        stats.set_stat(STAT_AGENTS, agents);
     }
 
 }
