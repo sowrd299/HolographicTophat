@@ -1,5 +1,7 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
+import java.lang.Iterable;
 
 // Networking variables
 String server_ip = "192.168.1.65"; // the ip of the server computer
@@ -89,6 +91,44 @@ void switch_to_jobs_menu(){
     },
     holo_color
   ) );
+}
+
+/**
+Fails all cards plays in the given array that the player's can't afford
+Returns players whose plays failed
+*/
+HashSet<Player> check_agent_costs(Iterable<CardPlay> card_plays){
+
+  // sort the plays by player
+  HashMap<Player,ArrayList<CardPlay>> cp_by_player = new HashMap<Player,ArrayList<CardPlay>>();
+  for(CardPlay cp : card_plays){
+    if(!cp_by_player.containsKey(cp.get_player())){
+      cp_by_player.put(cp.get_player(), new ArrayList<CardPlay>());
+    }
+    cp_by_player.get(cp.get_player()).add(cp);
+  }
+
+  // set up return 
+  HashSet<Player> r = new HashSet<Player>();
+
+  // check for each player
+  for(Player player : cp_by_player.keySet()){
+    // get the cards played by the player
+    Card[] cards = new Card[cp_by_player.get(player).size()];
+    for(int i = 0; i < cards.length; i++){
+      cards[i] = cp_by_player.get(player).get(i).get_card();
+    }
+    // if their plays aren't legal, fail them all
+    if(!player.are_legal_plays(cards)) {
+      for(CardPlay cp : cp_by_player.get(player)){
+        cp.fail();
+      }
+      // denot that they failed
+      r.add(player);
+    }
+  }
+
+  return r;
 }
 
 /**
@@ -185,6 +225,16 @@ void draw() {
           alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
         }
 
+        // HANDLE AGENTS COSTS
+        HashSet<Player> failed_players = check_agent_costs(card_plays);
+        // add the outcome to the alert
+        for(String id : players.keySet()){
+          if(failed_players.contains(players.get(id))){
+            alert += player_name(id) + " assigned too many agents and failed.\n";
+          }
+        }
+
+        // RESOLVE ALL THE CARD PLAYS
         for(String step : STEPS_CARD_PLAY){
           for(CardPlay cp : card_plays){
             cp.play(step);

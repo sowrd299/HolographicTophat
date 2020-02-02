@@ -2,6 +2,7 @@
 A family of classes that governs playing cards
 */
 
+// the steps in which card plays happen, in order
 String[] STEPS_CARD_PLAY = new String[]{
     "setup",
     "score",
@@ -12,14 +13,20 @@ class CardPlay {
 
     protected Player player;
     protected Card card;
+    protected boolean failed; // weather or not playing the card has failed
 
     CardPlay(Player player, Card card){
         this.player = player;
         this.card = card;
+        failed = false;
     }
 
     Player get_player(){
         return player;
+    }
+
+    Card get_card(){
+        return card;
     }
 
     void play(String step) {
@@ -28,6 +35,11 @@ class CardPlay {
                 player.played_from_hand(card);
                 break;
         }
+    }
+
+    // calling this will prevent the card play from having future game effects
+    void fail(){
+        this.failed = true;
     }
 
 }
@@ -45,7 +57,7 @@ class PlayAgainstCardPlay extends CardPlay {
         super.play(step);
         switch(step) {
             case "score":
-                against.play_card_against(player, card);
+                if(!failed) against.play_card_against(player, card);
                 break;
         }
     }
@@ -62,7 +74,7 @@ class DefenseCardPlay extends CardPlay {
         super.play(step);
         switch(step) {
             case "setup":
-                player.play_defense(card);
+                if(!failed) player.play_defense(card);
                 break;
             case "cleanup":
                 player.clear_defense();

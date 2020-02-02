@@ -113,7 +113,7 @@ class Player{
         Stat boss_agents = boss.get_stat_object(STAT_AGENTS);
         available.put(AGENT_ALL_PURPOSE, 0); // ensure always have this fields
         for(String agent_type: boss_agents.get_stats()) {
-            available.put(agent_type, boss.get_stat(agent_type));
+            available.put(agent_type, boss_agents.get_stat(agent_type).get());
         }
 
         // use agents
@@ -137,6 +137,8 @@ class Player{
                 available.put(AGENT_ALL_PURPOSE, available.get(AGENT_ALL_PURPOSE) + available.get(k));
             }
         }
+
+        System.out.println(available);
 
         // because of the last step, if we have enough all purpse agents, we have enough agents
         return available.get(AGENT_ALL_PURPOSE) >= 0;
