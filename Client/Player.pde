@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 /**
 A class to represent a player's current gamestate
 Implements game logic
@@ -8,6 +10,8 @@ class Player{
     private int score; // the player's current score
     private int hand_size; // tracks the number of cards in this player's hand
 
+    private Card boss; // the player's "boss" identity card
+
     private Card defense; // the card the player is currently playing as their defense
     private Card job; // the job the player is currently on
 
@@ -15,6 +19,7 @@ class Player{
         progress = 0;
         score = 0;
         hand_size = 0;
+        boss = new BossCard("Agent of the Houses"); // testing boss card
         clear_defense();
     }
 
@@ -91,6 +96,51 @@ class Player{
     */
     void clear_defense(){
         defense = new ManeuverCard("The-No-Card-Here-Card",0,0,0);
+    }
+
+    // MANAGING THE AGENT COST OF MANEUVERS
+
+    /**
+    Returns if the given cards are a legal play, given the available agents
+    Takes all cards played by the player in a given round
+    */
+    // TODO: make this algorithm implementation more reusable
+    boolean are_legal_plays(Card[] played) {
+
+        HashMap<String, Integer> available = new HashMap<String, Integer>(); // agent type : number still available
+
+        // get the agents available
+        Stat boss_agents = boss.get_stat_object(STAT_AGENTS);
+        available.put(AGENT_ALL_PURPOSE, 0); // ensure always have this fields
+        for(String agent_type: boss_agents.get_stats()) {
+            available.put(agent_type, boss.get_stat(agent_type));
+        }
+
+        // use agents
+        for(Card c : played) {
+            Stat agents = c.get_stat_object(STAT_AGENTS);
+            for(String agent_type : agents.get_stats()) {
+
+                if(!available.containsKey(agent_type)){
+                    // if we know we don't have any agents of a type b/c it's not even in the map,
+                    //      just asign all purpose agents from the get-go
+                    agent_type = AGENT_ALL_PURPOSE; 
+                }
+
+                available.put(agent_type, available.get(agent_type) - agents.get_stat(agent_type).get());
+            }
+        }
+
+        // assign extra agents to all purpose
+        for(String k : available.keySet()){
+            if(k != AGENT_ALL_PURPOSE && available.get(k) < 0){
+                available.put(AGENT_ALL_PURPOSE, available.get(AGENT_ALL_PURPOSE) + available.get(k));
+            }
+        }
+
+        // because of the last step, if we have enough all purpse agents, we have enough agents
+        return available.get(AGENT_ALL_PURPOSE) >= 0;
+
     }
 
     // PLAYING JOBS

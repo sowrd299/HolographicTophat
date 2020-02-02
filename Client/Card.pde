@@ -24,6 +24,7 @@ class Stat {
 
     Stat(int value){
         this.value = value;
+        this.components = new HashMap<String, Stat>();
     }
 
     Stat(){

@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.ArrayList;
 
 // Networking variables
 String server_ip = "192.168.1.65"; // the ip of the server computer
@@ -116,6 +117,7 @@ void draw() {
         deck.add_card(cl.load_card("Relay Access"),5);
         deck.add_card(cl.load_card("Arcus Ar"),5);
         deck.add_card(cl.load_card("Call the Navosc"),5);
+        deck.shuffle();
 
         // setup the local player
         local_id = resp.get("you_are");
@@ -154,14 +156,15 @@ void draw() {
         String alert = "";
         boolean jobs_next = false; // if the next thing to happen is playing jobs
 
+        ArrayList<CardPlay> card_plays = new ArrayList<CardPlay>();
+
         // HANDLE PLAYING MANEUVERS AS DEFENSE
         // for the rules to work, this must happen before playing maneuvers
         for(String id : players.keySet()){
           String card_id = resp.get(id + "_defense");
           if(card_id != null){
             Card c = cl.load_card(card_id);
-            players.get(id).play_defense(c);
-            players.get(id).played_from_hand(c);
+            card_plays.add(new DefenseCardPlay(players.get(id), c));
             alert += player_name(id) + " defended with " + c.get_id() + ".\n";
             jobs_next = true;
           }
@@ -175,17 +178,17 @@ void draw() {
           // get the card played
           Card c = cl.load_card(resp.get(k));
           // actually play the card
-          players.get(ids[1]).play_card_against(players.get(ids[0]), c);
-          players.get(ids[0]).played_from_hand(c);
+          card_plays.add(new PlayAgainstCardPlay(players.get(ids[0]), players.get(ids[1]), c));
           // we now know the next step will be playing jobs
           jobs_next = true;
           // tell the player what happened
           alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
         }
 
-        // NOW THAT WE DON'T NEED DEFENSE ANYMORE, CLEAR THEM
-        for(String id : players.keySet()){
-          players.get(id).clear_defense();
+        for(String step : STEPS_CARD_PLAY){
+          for(CardPlay cp : card_plays){
+            cp.play(step);
+          }
         }
 
         // HANDLE PLAYING AND CONTINUING JOBS
