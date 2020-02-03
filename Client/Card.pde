@@ -60,6 +60,14 @@ class Stat {
         }
     }
 
+    Stat get_subset(String[] stats){
+        Stat r = new Stat();
+        for(String s : stats){
+            r.set_stat(s, get_stat(s));
+        }
+        return r;
+    }
+
     void set_stat(String stat, int val){
         components.put(stat, new Stat(val));
     }
@@ -96,6 +104,10 @@ class Card {
 
     Stat get_stat_object(String stat){
         return stats.get_stat(stat);
+    }
+
+    Stat get_stat_subset(String[] stats){
+        return this.stats.get_subset(stats);
     }
   
 }

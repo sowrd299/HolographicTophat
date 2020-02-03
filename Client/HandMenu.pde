@@ -7,12 +7,13 @@ class HandMenu extends Menu{
     ButtonHandler when_finished; // what to do after a card has been selected
 
     // display variables
-    int x = 32,y = 32;
-    int button_h = 124;
-    int button_w = width-64;
-    int y_padding = 16;
+    int x, y;
+    int button_w;
+    int button_h;
+    int y_padding;
 
     // menu items
+    Button bg_button;
     Button[] card_buttons;
 
     PlayPosition position;
@@ -22,6 +23,11 @@ class HandMenu extends Menu{
         this.hand = hand;
         this.position = position;
         this.when_finished = when_finished;
+        x = r.x + margin;
+        y = r.y + margin;
+        button_w = r.w - 2*margin;
+        button_h = r.h/12;
+        y_padding = margin/3;
     }
 
     void init(){
@@ -34,9 +40,9 @@ class HandMenu extends Menu{
 
         int i;
         for(i = 0; i < cards.length; i++){
-            card_buttons[i] = new TicketButton(
+            card_buttons[i] = new CardButton(
+                cards[i],
                 rects[i],
-                cards[i].get_id(),
                 holo_color,
                 new CardButtonHandler(cards[i], position, when_finished),
                 5, 32
@@ -65,10 +71,24 @@ class HandMenu extends Menu{
             5, 32
         );
 
+        // the background button
+        bg_button = new BackgroundButton(
+            create_bounding_rect(rects, margin, margin, margin, margin),
+            "",
+            holo_color,
+            null,
+            0, 5, margin, margin/2
+        );
+
     }
 
     Button[] get_buttons(){
-        return card_buttons;
+        Button[] r = new Button[card_buttons.length + 1];
+        r[0] = bg_button;
+        for(int i = 0; i < card_buttons.length; i++){
+            r[i+1] = card_buttons[i];
+        }
+        return r;
     }
 
     class CardButtonHandler implements ButtonHandler{

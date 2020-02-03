@@ -134,3 +134,28 @@ class DeskBox extends Box{
     }
 
 }
+
+
+class ShieldBox extends Box {
+
+    ShieldBox(Rect rect, color c, int stroke_weight, int corner_size){
+        super(rect, c, stroke_weight, corner_size);
+    }
+
+    void draw() {
+
+        setup_draw();
+
+        beginShape();
+
+        vertex(r.x + r.w/2, r.y);
+        bezierVertex(r.x + r.w/2 + corner_size, r.y + corner_size/4, r.x + r.w - corner_size, r.y + corner_size/2, r.x + r.w, r.y + corner_size/2);
+        bezierVertex(r.x + r.w, r.y + r.h - corner_size/2, r.x + r.w - corner_size, r.y + r.h - corner_size/2, r.x + r.w/2, r.y + r.h);
+        bezierVertex(r.x + corner_size, r.y + r.h - corner_size/2, r.x, r.y + r.h - corner_size/2, r.x, r.y + corner_size/2);
+        bezierVertex(r.x + corner_size, r.y + corner_size/2, r.x + r.w/2 - corner_size, r.y + corner_size/4, r.x + r.w/2, r.y);
+
+        endShape();
+
+    }
+
+}

@@ -69,6 +69,7 @@ class Button {
         this.margin = 16;
 
         font = loadFont("TlwgTypist-Bold-48.vlw");
+        font_size = r.h;
         this.handler = handler;
         // create the font color
         colorMode(HSB);
@@ -144,6 +145,20 @@ class BackgroundButton extends Button {
         super(rect, label, c, handler);
         this.font_size = font_size;
         box = new DeskBox(rect, c, stroke_weight, corner_size, margin);
+    }
+
+}
+
+/**
+A type of button used mostly for cards
+*/
+
+class ShieldButton extends Button {
+
+    ShieldButton(Rect rect, String label, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+        super(rect, label, c, handler);
+        font_size = r.h - 2*margin;
+        box = new ShieldBox(rect, c, stroke_weight, corner_size);
     }
 
 }
