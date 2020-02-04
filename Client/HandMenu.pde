@@ -40,7 +40,7 @@ class HandMenu extends Menu{
 
         int i;
         for(i = 0; i < cards.length; i++){
-            card_buttons[i] = new CardButton(
+            card_buttons[i] = new ManeuverCardButton(
                 cards[i],
                 rects[i],
                 holo_color,

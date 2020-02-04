@@ -55,7 +55,7 @@ Rect[] create_rects(int x, int y, int w, int h, int x_padding, int y_padding, in
 
 }
 
-Rect[] create_rects(Rect r, x_padding, y_padding, int rows, int cols){
+Rect[] create_rects(Rect r, int x_padding, int y_padding, int rows, int cols){
     return create_rects(r.x, r.y, r.w, r.h, x_padding, y_padding, rows, cols);
 }
 

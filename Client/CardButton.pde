@@ -31,20 +31,20 @@ class CardButton extends CompositButton {
         protected Button label_button;
 
         StatButton(Rect r, String label, Stat stat, color c){
-            super(rect, "", c, null);
+            super(r, "", c, null);
             font = loadFont("OldeEnglish-Regular-48.vlw");
             this.stat = stat;
             this.label_button = new Button(r.get_section(0,0.66,1,0.33), label, c, null);
         }
 
         String get_label(){
-            return stat.get().toString();
+            return str(stat.get());
         }
         
         Button[] get_buttons(){
             return new Button[]{
-                label_button;
-            }
+                label_button
+            };
         }
 
     }
@@ -59,31 +59,45 @@ class CardButton extends CompositButton {
         main_button = new MainButton(rect, c, stroke_weight, corner_size);
 
         // setup stat buttons
+        // TODO: make this less redundent maybe?
         Stat left_stats = get_left_stats();
         String[] left_stat_names = left_stats.get_stats();
         Stat right_stats = get_right_stats();
         String[] right_stat_names = right_stats.get_stats();
 
-        Rect base_left_rect = rect.get_section(0.1,0.1,0.15,0.8);
+        Rect base_left_rect = rect.get_section(0.05, 0.05, 0.1, 0.7);
         Rect[] left_rects = create_rects(base_left_rect, margin, margin, 1, left_stat_names.length);
 
-        Rect base_right_rect = rect.get_section(0.75, 0.1, 0.15, 0.8);
-        Rect[] right_rects = create_rects(base_right_rect, -margin-base_right_rect.w, margin, 1, right_stats.get_stats().length);
+        Rect base_right_rect = rect.get_section(0.85, 0.05, 0.1, 0.7);
+        Rect[] right_rects = create_rects(base_right_rect, 2*(-base_right_rect.w), margin, 1, right_stat_names.length);
 
         stat_buttons = new StatButton[left_rects.length + right_rects.length];
-        for(int i = 0; i < left_rects.length; i++){
 
+        for(int i = 0; i < left_rects.length; i++){
+            stat_buttons[i] = new StatButton(left_rects[i], left_stat_names[i], left_stats.get_stat(left_stat_names[i]), c);
+        }
+
+        for(int i = 0; i < right_rects.length; i++){
+            stat_buttons[i+left_rects.length] = new StatButton(right_rects[i], right_stat_names[i], right_stats.get_stat(right_stat_names[i]), c);
         }
 
         // set title button in intervening space
-        title_button = new TitleButton(rect.get_section())
+        Rect inner_left_rect = left_rects.length > 0 ? left_rects[left_rects.length-1] : r.get_section(0.1,0.1,0,0.8);
+        Rect inner_right_rect = right_rects.length > 0 ? right_rects[right_rects.length-1] : r.get_section(0.9,0.1,0,0.8);
+        title_button = new TitleButton(
+            new Rect( inner_left_rect.x + inner_left_rect.w,  inner_left_rect.y, inner_right_rect.x - inner_left_rect.x - inner_left_rect.w, r.h/3),
+            c
+        );
     }
 
     Button[] get_buttons(){
-        return new Button[]{
-            main_button,
-            title_button
-        };
+        Button[] r = new Button[2 + stat_buttons.length];
+        r[0] = main_button;
+        r[1] = title_button;
+        for(int i = 0; i < stat_buttons.length; i++){
+            r[2+i] = stat_buttons[i];
+        }
+        return r;
     }
 
     /**
@@ -98,6 +112,23 @@ class CardButton extends CompositButton {
     */
     Stat get_right_stats(){
         return new Stat();
+    }
+
+}
+
+
+class ManeuverCardButton extends CardButton {
+
+    ManeuverCardButton(Card card, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+        super(card, rect, c, handler, stroke_weight, corner_size);
+    }
+
+    Stat get_left_stats(){
+        return card.get_stat_object(STAT_AGENTS);
+    }
+
+    Stat get_right_stats(){
+        return card.get_stat_subset(new String[]{STAT_CUNNING, STAT_FORCE, STAT_STEALTH});
     }
 
 }
