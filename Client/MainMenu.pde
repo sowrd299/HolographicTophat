@@ -22,7 +22,7 @@ class MainMenu extends Menu {
 
     void init() {
 
-        int player_button_h = r.h/7;
+        int player_button_h = r.h/6;
         int player_button_w = r.w-2*margin;
 
         // setup the opponent buttons
