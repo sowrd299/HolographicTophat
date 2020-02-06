@@ -27,7 +27,7 @@ class MainMenu extends Menu {
 
         // setup the opponent buttons
         play_buttons = new Button[opponents.length];
-        Rect[] rects = create_rects(margin,margin+font_size,player_button_w,player_button_h,8,8,opponents.length,1);
+        Rect[] rects = create_rects(margin,margin+font_size,player_button_w,player_button_h,margin,margin,opponents.length,1);
         
         for(int i = 0; i < play_buttons.length; i++){
             // the menu for playing a card against that opponent

@@ -77,10 +77,10 @@ class PlayerUIButton extends CompositButton{
         this.opponent = opponent;
 
         // set up the buttons
-        main_button = new MainButton(rect.get_section(0,0,0.5,0.2), c, null, stroke_weight, corner_size);
-        job_button = new JobCardButton(opponent.get_player().get_job(), rect.get_section(0,0.2,1,0.3), c, null, stroke_weight, corner_size);
-        played_against_button =new ManeuverCardButton(opponent.get_played_against().get(), rect.get_section(0,0.5,1,0.3), c, null, stroke_weight, corner_size);
-        score_button = new ScoreButton(rect.get_section(0.1,0.64,0.8,0.2), c, null, stroke_weight, corner_size);
+        main_button = new MainButton(rect.get_section(0,0,0.4,0.25), c, null, stroke_weight, corner_size);
+        job_button = new JobCardButton(opponent.get_player().get_job(), rect.get_section(0.45,0,0.55,0.25), c, null, stroke_weight, corner_size);
+        played_against_button =new ManeuverCardButton(opponent.get_played_against().get(), rect.get_section(0,0.25,1,0.5), c, null, stroke_weight, corner_size);
+        score_button = new ScoreButton(rect.get_section(0.1,0.75,0.8,0.25), c, null, stroke_weight, corner_size);
     }
 
     Button[] get_buttons(){
