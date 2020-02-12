@@ -39,6 +39,10 @@ class Player{
         return job;
     }
 
+    Card get_boss(){
+        return boss;
+    }
+
 
     // HAND MANAGEMENT
 

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class MainMenu extends Menu {
 
     private PlayerUI local_player;
@@ -71,9 +73,15 @@ class MainMenu extends Menu {
             5, 32
         );
 
+        String agent_line = "|";
+        Stat agents = local_player.get_player().get_boss().get_stat_object(STAT_AGENTS);
+        for(String agent_type : agents.get_stats()){
+            agent_line += " " + agent_type + ": " + agents.get_stat(agent_type).get() + " |";
+        }
+
         local_bg_button = new BackgroundButton(
-            create_bounding_rect(new Rect[]{local_r}, margin/2, margin/2, font_size + margin/2, margin/2),
-            ":you <defense>:",
+            create_bounding_rect(new Rect[]{local_r}, margin/2, margin/2, 2*font_size + margin/2, margin/2),
+            ":you <defense>:\n" + agent_line,
             holo_color,
             null,
             font_size,
@@ -82,7 +90,7 @@ class MainMenu extends Menu {
 
 
         // setup the lock-in buttons
-        send_button = new TicketButton(new Rect(32,r.h-224,r.w-64,124), "Lock-in Action", holo_color, lockin_handler, 5, 32);
+        send_button = new TicketButton(new Rect(margin,r.h-margin-r.h/13,r.w-2*margin,r.h/13), "Lock-in Actions", holo_color, lockin_handler, 5, 32);
 
     }
 
