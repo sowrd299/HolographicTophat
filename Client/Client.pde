@@ -9,6 +9,8 @@ Connection con;
 GameplaySender gp_sender;
 
 // graphics and UI variables
+String welcome_text = ":AEH 41.06.54:\nWelcome .Agent. to:\n\nVITIUM\n\n";
+
 StarFieldBG bg;
 color holo_color;
 Menu menu;
@@ -40,13 +42,12 @@ void setup(){
 
   // connect
   con = new Connection();
-  con.connect(server_ip);
 
   // setup the GUI
   holo_color = color(240,60,60);
   bg = new StarFieldBG();
   switcher = new MenuSwitcher();
-  switcher.switch_menu(new Menu()); // placeholder loading menu
+  switcher.switch_menu(new AlertMenu(welcome_text+"Connecting to insterstellar coms relay...", holo_color, null));
 
   // setup gameplay
   cl = new CardLoader();
@@ -140,161 +141,176 @@ void draw() {
   bg.draw();
   menu.draw();
 
-  // check for incoming messages
-  Message resp = con.recieve();
-  if(resp != null) {
-    System.out.println("Recieved message: "+resp.to_string());
-    switch (resp.get("type")) {
+  if(con.is_connected()) {
 
-      // SETS UP THE GAME 
-      case "setup":
 
-        players = new HashMap<String, Player>();
+    // check for incoming messages
+    Message resp = con.recieve();
+    if(resp != null) {
+      System.out.println("Recieved message: "+resp.to_string());
+      switch (resp.get("type")) {
 
-        // the testing deck
-        Deck deck = new Deck();
-        deck.add_card(cl.load_card("Do as Mantis"),5);
-        deck.add_card(cl.load_card("Relay Access"),5);
-        deck.add_card(cl.load_card("Arcus Ar"),5);
-        deck.add_card(cl.load_card("Call the Navosc"),5);
-        deck.shuffle();
+        // WHEN TOLD TO WAIT BY THE SERVER:
+        case "wait":
+          switcher.switch_menu(new AlertMenu(welcome_text+"Relay located. Link secured.\nAwaiting handshake from forign parties...", holo_color, null));
+          break;
 
-        // setup the local player
-        local_id = resp.get("you_are");
-        LocalPlayer lp = new LocalPlayer(deck);
-        players.put(local_id, lp);
-        local_player = new PlayerUI(local_id, lp);
-        hand = lp.get_hand();
+        // SETS UP THE GAME 
+        case "setup":
 
-        // setup opponents
-        String[] player_ids = resp.get("other_players").split(",",0);
-        opponents = new PlayerUI[player_ids.length];
-        for(int i = 0; i < player_ids.length; i++){
-          Player player = new Player();
-          players.put(player_ids[i], player);
-          if(player_ids[i] != local_id){
-            opponents[i] = new PlayerUI(player_ids[i], player);
-          }
-        }
+          players = new HashMap<String, Player>();
 
-        // draw starting hands
-        for(String id : players.keySet()){
-          players.get(id).draw_cards(6);
-        }
+          // the testing deck
+          Deck deck = new Deck();
+          deck.add_card(cl.load_card("Do as Mantis"),5);
+          deck.add_card(cl.load_card("Relay Access"),5);
+          deck.add_card(cl.load_card("Arcus Ar"),5);
+          deck.add_card(cl.load_card("Call the Navosc"),5);
+          deck.shuffle();
 
-        // gameplay connection
-        gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
-        
-        // go into the game menu; currently starts by choosing your first job
-        main_menu = new MainMenu(opponents, local_player, hand, switcher, gp_sender, holo_color);
-        switch_to_jobs_menu();
-        break;
+          // setup the local player
+          local_id = resp.get("you_are");
+          LocalPlayer lp = new LocalPlayer(deck);
+          players.put(local_id, lp);
+          local_player = new PlayerUI(local_id, lp);
+          hand = lp.get_hand();
 
-      // TELL THE CLIENT CARDS HAVE BEEN PLAYED 
-      case "card_play":
-
-        String alert = "";
-        boolean jobs_next = false; // if the next thing to happen is playing jobs
-
-        ArrayList<CardPlay> card_plays = new ArrayList<CardPlay>();
-
-        // HANDLE PLAYING MANEUVERS AS DEFENSE
-        // for the rules to work, this must happen before playing maneuvers
-        for(String id : players.keySet()){
-          String card_id = resp.get(id + "_defense");
-          if(card_id != null){
-            Card c = cl.load_card(card_id);
-            card_plays.add(new DefenseCardPlay(players.get(id), c));
-            alert += player_name(id) + " defended with " + c.get_id() + ".\n";
-            jobs_next = true;
-          }
-        }
-
-        // HANDLE PLAYING MANEUVERS AGAINST OTHER PLAYERS
-        // TODO: parsing should probably get rolled in with gp_sender
-        for(String k : resp.regex_get_keys(".*_to_.*")){
-          // get the player ids for who played the card on who
-          String[] ids = k.split("_to_",0);
-          // get the card played
-          Card c = cl.load_card(resp.get(k));
-          // actually play the card
-          card_plays.add(new PlayAgainstCardPlay(players.get(ids[0]), players.get(ids[1]), c));
-          // we now know the next step will be playing jobs
-          jobs_next = true;
-          // tell the player what happened
-          alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
-        }
-
-        // HANDLE AGENTS COSTS
-        HashSet<Player> failed_players = check_agent_costs(card_plays);
-        // add the outcome to the alert
-        for(String id : players.keySet()){
-          if(failed_players.contains(players.get(id))){
-            alert += player_name(id) + " assigned too many agents and failed.\n";
-          }
-        }
-
-        // RESOLVE ALL THE CARD PLAYS
-        for(String step : STEPS_CARD_PLAY){
-          for(CardPlay cp : card_plays){
-            cp.play(step);
-          }
-        }
-
-        // HANDLE PLAYING AND CONTINUING JOBS
-        for(String id : players.keySet()){
-          // continuing jobs
-          if("true".equals(resp.get(id + "_continue_job"))){
-            players.get(id).continue_job();
-            alert += player_name(id) + " continued the job " + players.get(id).get_job().get_id() + ".\n";
-          }
-          // playing new jobs
-          String card_id = resp.get(id + "_job");
-          if(card_id != null){
-            Card card = cl.load_card(card_id);
-            if(card != null){
-              // wrap up the last job
-              boolean success = players.get(id).finish_job();
-              if(players.get(id).get_job() != null){
-                alert += player_name(id) + (success ? " successfully compleated " : " failed ") + " the job " + players.get(id).get_job().get_id() + ".\n";
-              }
-              // actually play the new job
-              players.get(id).play_job(card);
-              alert += player_name(id) + " began the job " + players.get(id).get_job().get_id() + ".\n";
+          // setup opponents
+          String[] player_ids = resp.get("other_players").split(",",0);
+          opponents = new PlayerUI[player_ids.length];
+          for(int i = 0; i < player_ids.length; i++){
+            Player player = new Player();
+            players.put(player_ids[i], player);
+            if(player_ids[i] != local_id){
+              opponents[i] = new PlayerUI(player_ids[i], player);
             }
           }
-        }
 
-        // leave any current menu
-        switcher.switch_menu(main_menu);
-
-        // HAND THE START OF A NEW ROUND
-        // draw cards and go to the jobs menu
-        if(jobs_next){
+          // draw starting hands
           for(String id : players.keySet()){
-            players.get(id).draw_cards(3);
+            players.get(id).draw_cards(6);
           }
+
+          // gameplay connection
+          gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
+          
+          // go into the game menu; currently starts by choosing your first job
+          main_menu = new MainMenu(opponents, local_player, hand, switcher, gp_sender, holo_color);
           switch_to_jobs_menu();
-        }
+          break;
 
-        // alert the user to what happened
-        // TODO: this can preserve a menu that shouldn't be preverve sometimes
-        switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
+        // TELL THE CLIENT CARDS HAVE BEEN PLAYED 
+        case "card_play":
 
-        // clear all card positions
-        // TODO: doing this exhaustively is annoying
-        for(PlayerUI o : opponents){
-          o.get_played_against().clear();
-        }
-        local_player.get_played_against().clear();
-        job_position.clear();
+          String alert = "";
+          boolean jobs_next = false; // if the next thing to happen is playing jobs
 
-        // increment the turn count
-        gp_sender.inc_turn();
+          ArrayList<CardPlay> card_plays = new ArrayList<CardPlay>();
 
-        break;
-      
+          // HANDLE PLAYING MANEUVERS AS DEFENSE
+          // for the rules to work, this must happen before playing maneuvers
+          for(String id : players.keySet()){
+            String card_id = resp.get(id + "_defense");
+            if(card_id != null){
+              Card c = cl.load_card(card_id);
+              card_plays.add(new DefenseCardPlay(players.get(id), c));
+              alert += player_name(id) + " defended with " + c.get_id() + ".\n";
+              jobs_next = true;
+            }
+          }
+
+          // HANDLE PLAYING MANEUVERS AGAINST OTHER PLAYERS
+          // TODO: parsing should probably get rolled in with gp_sender
+          for(String k : resp.regex_get_keys(".*_to_.*")){
+            // get the player ids for who played the card on who
+            String[] ids = k.split("_to_",0);
+            // get the card played
+            Card c = cl.load_card(resp.get(k));
+            // actually play the card
+            card_plays.add(new PlayAgainstCardPlay(players.get(ids[0]), players.get(ids[1]), c));
+            // we now know the next step will be playing jobs
+            jobs_next = true;
+            // tell the player what happened
+            alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
+          }
+
+          // HANDLE AGENTS COSTS
+          HashSet<Player> failed_players = check_agent_costs(card_plays);
+          // add the outcome to the alert
+          for(String id : players.keySet()){
+            if(failed_players.contains(players.get(id))){
+              alert += player_name(id) + " assigned too many agents and failed.\n";
+            }
+          }
+
+          // RESOLVE ALL THE CARD PLAYS
+          for(String step : STEPS_CARD_PLAY){
+            for(CardPlay cp : card_plays){
+              cp.play(step);
+            }
+          }
+
+          // HANDLE PLAYING AND CONTINUING JOBS
+          for(String id : players.keySet()){
+            // continuing jobs
+            if("true".equals(resp.get(id + "_continue_job"))){
+              players.get(id).continue_job();
+              alert += player_name(id) + " continued the job " + players.get(id).get_job().get_id() + ".\n";
+            }
+            // playing new jobs
+            String card_id = resp.get(id + "_job");
+            if(card_id != null){
+              Card card = cl.load_card(card_id);
+              if(card != null){
+                // wrap up the last job
+                boolean success = players.get(id).finish_job();
+                if(players.get(id).get_job() != null){
+                  alert += player_name(id) + (success ? " successfully compleated " : " failed ") + " the job " + players.get(id).get_job().get_id() + ".\n";
+                }
+                // actually play the new job
+                players.get(id).play_job(card);
+                alert += player_name(id) + " began the job " + players.get(id).get_job().get_id() + ".\n";
+              }
+            }
+          }
+
+          // leave any current menu
+          switcher.switch_menu(main_menu);
+
+          // HAND THE START OF A NEW ROUND
+          // draw cards and go to the jobs menu
+          if(jobs_next){
+            for(String id : players.keySet()){
+              players.get(id).draw_cards(3);
+            }
+            switch_to_jobs_menu();
+          }
+
+          // alert the user to what happened
+          // TODO: this can preserve a menu that shouldn't be preverve sometimes
+          switcher.switch_menu(new AlertMenu(alert, holo_color, switcher.create_button_handler(menu)));
+
+          // clear all card positions
+          // TODO: doing this exhaustively is annoying
+          for(PlayerUI o : opponents){
+            o.get_played_against().clear();
+          }
+          local_player.get_played_against().clear();
+          job_position.clear();
+
+          // increment the turn count
+          gp_sender.inc_turn();
+
+          break;
+        
+      }
+
     }
+
+  }else{ // if !con.is_connected();
+
+    con.connect(server_ip);
+
   }
 }
 

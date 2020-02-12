@@ -10,12 +10,19 @@ class Connection{
     private DataOutputStream out;
     private InputStreamReader in;
 
+    private boolean connected;
+
     private String in_buffer;
 
     private Socket soc;
 
     Connection(){
         in_buffer = "";
+        connected = false;
+    }
+
+    boolean is_connected(){
+        return connected;
     }
 
     // connects to the given server
@@ -31,6 +38,7 @@ class Connection{
             out = new DataOutputStream(soc.getOutputStream());
             in = new InputStreamReader(soc.getInputStream());
 
+            connected = true;
             return true;
 
         }catch(UnknownHostException e){
@@ -48,6 +56,7 @@ class Connection{
             return true;
         }catch(IOException e){
             System.out.println("IOException on Send");
+            connected = false;
             return false;
         }
     }
@@ -60,6 +69,7 @@ class Connection{
                 in_buffer += (char)c;
             }
         }catch(IOException e){
+            connected = false;
             System.out.println("IOException on Recieve");
         }
     }
