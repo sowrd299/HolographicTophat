@@ -1,26 +1,39 @@
 class JobMenu extends Menu {
 
     private Hand job_hand;
+    private Player player;
     private Card cont_job; // the job that can be continued
     private PlayPosition position;
     private ButtonHandler when_finished;
 
+    private Button status_button;
     private Button bg_button;
     private Button[] job_buttons;
     private Button continue_button;
 
-    JobMenu(Hand job_hand, Card cont_job, PlayPosition position, ButtonHandler when_finished, color holo_color){
+    JobMenu(Hand job_hand, Player player, PlayPosition position, ButtonHandler when_finished, color holo_color){
         super(null, holo_color);
         this.job_hand = job_hand;
-        this.cont_job = cont_job;
+        this.player = player;
+        this.cont_job = player.get_job();
         this.position = position;
         this.when_finished = when_finished;
     }
 
     void init(){
 
+        Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
+        status_button = new BackgroundButton(
+            status_rect,
+            (player.will_complete_job()? "You are ready for your next job." : "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Pogress)",
+            holo_color,
+            null,
+            font_size,
+            5, margin, margin/2
+        );
+
         Card[] cards = job_hand.get_cards();
-        Rect[] rects = create_rects(r.x+margin, r.y+margin+font_size, r.w-2*margin, r.h/12, 0, margin/2, cards.length+1, 1);
+        Rect[] rects = create_rects(r.x+margin, status_rect.y+status_rect.h+margin+font_size, r.w-2*margin, r.h/12, 0, margin/2, cards.length+1, 1);
         int i = 0;
 
         job_buttons = new Button[cards.length];
@@ -49,11 +62,12 @@ class JobMenu extends Menu {
     }
 
     Button[] get_buttons(){
-        Button[] r = new Button[job_buttons.length + 2];
+        Button[] r = new Button[job_buttons.length + 3];
         r[0] = bg_button;
         r[1] = continue_button;
+        r[2] = status_button;
         for(int i = 0; i < job_buttons.length; i++){
-            r[i+2] = job_buttons[i];
+            r[i+3] = job_buttons[i];
         }
         return r;
     }

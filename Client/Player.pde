@@ -163,16 +163,21 @@ class Player{
     }
 
     /**
+    Returns if the current job will succeed if it is finished at this moment
+    */
+    boolean will_complete_job(){
+        return job == null || progress >= 0;
+    }
+
+    /**
     Handles the end of a job
     returns wether or not that job succeeded
     */
     boolean finish_job(){
         boolean success = false;
-        if(job != null){
-            if(progress >= 0){
-                score += job.get_stat(STAT_REWARD);
-                success = true;
-            }
+        if(will_complete_job() && job != null) {
+            score += job.get_stat(STAT_REWARD);
+            success = true;
         }
         progress = 0;
         return success;

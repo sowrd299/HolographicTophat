@@ -81,7 +81,7 @@ switches to a new jobs menu
 void switch_to_jobs_menu(){
   switcher.switch_menu( new JobMenu(
     job_hand,
-    players.get(local_id).get_job(),
+    players.get(local_id),
     job_position,
     new ButtonHandler() {
       public void on_click(){
