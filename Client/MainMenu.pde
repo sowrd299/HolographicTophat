@@ -19,7 +19,7 @@ class MainMenu extends Menu {
         this.local_player = local_player;
         this.hand = hand;
         this.lockin_handler = lockin_handler;
-        margin = 48;
+        //margin = r.h/40;
     }
 
     void init() {
@@ -45,7 +45,7 @@ class MainMenu extends Menu {
                 rects[i],
                 holo_color,
                 menu_switcher.create_button_handler(hand_menu),
-                5, 32
+                margin/10, 2*margin/3
             );
         };
 
@@ -55,11 +55,14 @@ class MainMenu extends Menu {
             holo_color,
             null,
             font_size,
-            5, margin, margin/2
+            margin/10, margin, margin/2
         );
 
         // setup the local player ui
-        Rect local_r = new Rect(margin, r.h-224-margin-player_button_h, player_button_w, player_button_h);
+
+        int send_button_h = r.h/13;
+
+        Rect local_r = new Rect(margin, r.h-send_button_h-2*margin-player_button_h, player_button_w, player_button_h);
         local_player_button = new PlayerUIButton(
             local_player,
             local_r,
@@ -70,7 +73,7 @@ class MainMenu extends Menu {
                 menu_switcher.create_button_handler(this),
                 holo_color
             )),
-            5, 32
+            margin/10, 2*margin/3
         );
 
         String agent_line = "|";
@@ -85,12 +88,12 @@ class MainMenu extends Menu {
             holo_color,
             null,
             font_size,
-            5, margin, margin/2
+            margin/10, margin, margin/2
         );
 
 
         // setup the lock-in buttons
-        send_button = new TicketButton(new Rect(margin,r.h-margin-r.h/13,r.w-2*margin,r.h/13), "Lock-in Actions", holo_color, lockin_handler, 5, 32);
+        send_button = new TicketButton(new Rect(margin,r.h-margin-r.h/13,r.w-2*margin,send_button_h), "Lock-in Actions", holo_color, lockin_handler, margin/10, 2*margin/3);
 
     }
 

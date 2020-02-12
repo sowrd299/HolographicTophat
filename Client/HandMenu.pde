@@ -45,7 +45,7 @@ class HandMenu extends Menu{
                 rects[i],
                 holo_color,
                 new CardButtonHandler(cards[i], position, when_finished),
-                5, 32
+                margin/10, 2*margin/3
             );
 
         }
@@ -57,7 +57,7 @@ class HandMenu extends Menu{
                 "<"+position.get().get_id()+">",
                 holo_color,
                 when_finished,
-                5, 32
+                margin/10, 2*margin/3
             );
             i++;
         }
@@ -68,7 +68,7 @@ class HandMenu extends Menu{
             "None",
             holo_color,
             new CardButtonHandler(null, position, when_finished),
-            5, 32
+            margin/10, 2*margin/3
         );
 
         // the background button
@@ -77,7 +77,7 @@ class HandMenu extends Menu{
             "",
             holo_color,
             null,
-            0, 5, margin, margin/2
+            0, margin/10, margin, margin/2
         );
 
     }

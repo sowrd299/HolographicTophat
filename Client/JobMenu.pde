@@ -29,7 +29,7 @@ class JobMenu extends Menu {
             holo_color,
             null,
             font_size,
-            5, margin, margin/2
+            margin/10, margin, margin/2
         );
 
         Card[] cards = job_hand.get_cards();
@@ -43,7 +43,7 @@ class JobMenu extends Menu {
                 cards[i].get_id(),
                 holo_color,
                 new JobButtonHandler(cards[i]),
-                5, 32                
+                margin/10, 2*margin/3
             );
         }
 
@@ -56,7 +56,7 @@ class JobMenu extends Menu {
             holo_color,
             null,
             font_size,
-            5, margin, margin/2
+            margin/10, margin, margin/2
         );
 
     }
@@ -100,14 +100,14 @@ class JobMenu extends Menu {
                 "Continue:",
                 holo_color,
                 null,
-                5,32
+                margin/3, 3*margin
             );
             card_button = new TicketButton(
                 r.get_section(0, 0.34, 1, 0.64),
                 cont_job != null ? cont_job.get_id() : "Nothing to Continue",
                 holo_color,
                 null,
-                5,32
+                margin/3, 3*margin
             );
         }
 

@@ -43,7 +43,7 @@ class TicketBox extends Box{
         setup_draw();
 
         // do the background rectangle
-        strokeWeight(stroke_weight-1);
+        strokeWeight(max(stroke_weight-1,0));
         rect(r.x + corner_size/2, r.y + corner_size/2, r.w - corner_size, r.h - corner_size);
 
         // the main box

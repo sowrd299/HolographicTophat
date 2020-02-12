@@ -7,27 +7,26 @@ class AlertMenu extends Menu{
     ButtonHandler when_finished;
     Button bg;
     Button finished_button;
-    int margin;
 
     AlertMenu(String text, color holo_color, ButtonHandler when_finished){
         super(null, holo_color);
         this.text = text;
         this.when_finished = when_finished;
-        this.margin = 16;
+        this.margin = r.h/120;
     }
 
     void init(){
 
-        Rect area = new Rect(8, height/4, width-2*margin, height/2);
+        Rect area = new Rect(8, r.h/4, r.w-2*margin, r.h/2);
 
-        bg = new BackgroundButton(area, text, holo_color, null, height/36, 5, 128, 32);
+        bg = new BackgroundButton(area, text, holo_color, null, r.h/36, margin/3, 8*margin, 2*margin);
 
         finished_button = new TicketButton(
             area.get_section(0.33, 0.8, 0.33, 0.15),
             "Ja",
             holo_color,
             when_finished,
-            5, 32
+            margin/3, 2*margin
         );
 
     }

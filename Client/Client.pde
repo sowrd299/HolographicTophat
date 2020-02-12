@@ -35,8 +35,8 @@ PlayPosition job_position;
 void setup(){
   
   // setup the render
-  fullScreen();
-  //size(520,920);
+  //fullScreen();
+  size(520,920);
 
   // connect
   con = new Connection();
