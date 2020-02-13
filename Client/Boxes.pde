@@ -30,6 +30,33 @@ class Box {
 }
 
 /**
+A box to render a bookmark shape
+(with the tongues on the left hand side)
+*/
+class TabBox extends Box{
+
+    TabBox(Rect rect, color c, int stroke_weight, int corner_size){
+        super(rect, c, stroke_weight, corner_size);
+    }
+
+    void draw(){
+        setup_draw();
+
+        beginShape();
+
+        vertex(r.x, r.y+corner_size);
+        vertex(r.x + r.w, r.y);
+        vertex(r.x + r.w, r.y + r.h);
+        vertex(r.x, r.y+r.h-corner_size);
+        vertex(r.x+corner_size, r.y+r.h/2);
+
+        endShape();
+    }
+
+}
+
+
+/**
 A class to render a fancy box
  */
 class TicketBox extends Box{

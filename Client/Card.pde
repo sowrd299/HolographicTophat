@@ -176,21 +176,21 @@ class CardLoader {
         cards = new HashMap<String, Card>();
         
         // testing maneuvers
-        register(new ManeuverCard("Do as Mantis",           2,3,1, "Seducer",2));
-        register(new ManeuverCard("Relay Access",           4,0,2, "Hacker",2));
-        register(new ManeuverCard("The Arcus 2's Aid",      2,2,2, "Sailor",2));
-        register(new ManeuverCard("Cannon Fire",            4,4,0, "Sailor",3));
-        register(new ManeuverCard("Heavy Fire",             2,6,0, "Sailor",3));
+        register(new ManeuverCard("Do as Mantis",           3,3,1, "Seducer",2));
+        register(new ManeuverCard("Relay Access",           5,0,2, "Hacker",2));
+        register(new ManeuverCard("The Arcus 2's Aid",      3,2,2, "Sailor",2));
+        register(new ManeuverCard("Cannon Fire",            5,4,0, "Sailor",3));
+        register(new ManeuverCard("Heavy Fire",             3,6,0, "Sailor",3));
         register(new ManeuverCard("Dogfight",               0,3,3, "Sailor",2));
-        register(new ManeuverCard("Turret Fire",            2,2,0, "Sailor",1));
+        register(new ManeuverCard("Turret Fire",            3,2,0, "Sailor",1));
         register(new ManeuverCard("Boarding",               1,3,0, "Sailor",1));
         register(new ManeuverCard("Alert DJNF",             1,1,0, "Goon",0));
 
         // testing jobs
-        register(new JobCard("Patient Stalking",            6,6,2));
-        register(new JobCard("Rocketeering",                8,5,3));
-        register(new JobCard("Club Infiltration",           7,5,4));
-        register(new JobCard("Assassination in Nightlife",  5,2,6));
+        register(new JobCard("Patient Stalking",            5,5,2));
+        register(new JobCard("Rocketeering",                7,4,3));
+        register(new JobCard("Club Infiltration",           6,4,4));
+        register(new JobCard("Assassination in Nightlife",  4,2,6));
     }
 
     void register(Card card){

@@ -62,10 +62,10 @@ class Button {
 
     protected ButtonHandler handler;
 
-    // TODO: this schould really take a box as an argument
-    Button(Rect rect, String label, color c, ButtonHandler handler){
+    Button(Rect rect, String label, Box box, color c, ButtonHandler handler){
         this.r= rect;
         this.label = label;
+        this.box = box;
         this.margin = height/120; // TODO: ideally would not need to use "height" here
 
         font = loadFont("TlwgTypist-Bold-48.vlw");
@@ -77,8 +77,16 @@ class Button {
         colorMode(RGB);
     }
 
+    Button(Rect rect, String label, color c, ButtonHandler handler){
+        this(rect, label, null, c, handler);
+    }
+
     String get_label(){
         return label;
+    }
+
+    void set_label(String label){
+        this.label = label;
     }
 
     void draw(){

@@ -53,7 +53,7 @@ class HandMenu extends Menu{
         // the keep button
         if(keep_option) {
             card_buttons[i] = new TicketButton(
-                rects[i],
+                rects[i].get_section(0.1,0.1,0.8,0.8),
                 "<"+position.get().get_id()+">",
                 holo_color,
                 when_finished,
@@ -64,7 +64,7 @@ class HandMenu extends Menu{
 
         // the none button
         card_buttons[i] = new TicketButton(
-            rects[i].get_section(0.5,0,0.5,1),
+            rects[i].get_section(0.6,0.1,0.3,0.8),
             "None",
             holo_color,
             new CardButtonHandler(null, position, when_finished),
