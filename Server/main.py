@@ -3,6 +3,8 @@ from message import Message
 from threading import Thread
 from match import Match
 
+import sys
+
 '''
 A class for managing clients waiting to join a match
 '''
@@ -27,11 +29,11 @@ class MatchMakingQueue():
     '''
     def _add_to_match(self, match, client):
         # start the thread for that client in that match
-        Thread(target=match.manage_client, args=(c,self.client_ids[self.client_ind])).start()
+        Thread(target=match.manage_client, args=(client,self.client_ids[self.client_ind])).start()
         # increments the ID system
         # TODO: improve the client ind system for multiple ongoing matches
         self.client_ind += 1
-        self.client_ind %= len(client_ids)
+        self.client_ind %= len(self.client_ids)
 
     '''
     Tries to begin a new match from clients in the queue
@@ -53,18 +55,36 @@ class MatchMakingQueue():
         return match
 
 
-# list of all id's that can be assigned to clients
-client_ids = [
-    "Cler",
-    "Sayngos",
-    "Micu",
-    "Jarli"
-]
+'''
+A version of the match making queue that doesn't wait for everyone to join
+    to start the game.
+Instead, it add players to the game as they join
+'''
+class RollingMatchMakingQueue(MatchMakingQueue):
 
-def main():
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.match = Match(self.client_ids)
+
+    def enqueue(self, client):
+        self._add_to_match(self.match, client)
+
+    def make_match(self, _=None):
+        return self.match
+
+
+def main(match_maker_class, match_size):
+
+    # list of all id's that can be assigned to clients
+    client_ids = [
+        "Cler",
+        "Sayngos",
+        "Micu",
+        "Jarli"
+    ]
 
     con = ServerAcceptConnection()
-    match_maker = MatchMakingQueue(4, client_ids)
+    match_maker = match_maker_class(match_size, client_ids)
     print("Listening...")
     while True:
         c = con.accept_client()
@@ -72,5 +92,20 @@ def main():
         match_maker.enqueue(c)
         match_maker.make_match()
 
+
+# setup modes the server can opperate in
+
+ROLLING_MODE = "rolling"
+WAIT_MODE = "wait"
+DEFAULT_MODE = ROLLING_MODE
+DEFAULT_SIZE = 4
+
+modes = {
+    ROLLING_MODE : RollingMatchMakingQueue,
+    WAIT_MODE : MatchMakingQueue
+}
+
 if __name__ == "__main__":
-    main()
+    mode = modes[sys.argv[1].lower() if len(sys.argv) > 1 else DEFAULT_MODE]
+    size = int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_SIZE
+    main(mode, size)

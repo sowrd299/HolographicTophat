@@ -1,3 +1,5 @@
+from message import Message
+
 '''
 a class to represent an ongoing session of gameplay
 '''

@@ -77,10 +77,10 @@ String player_name(String player_id){
 }
 
 /**
-switches to a new jobs menu
+Returns an up-to-date jobs menu
 */
-void switch_to_jobs_menu(){
-  switcher.switch_menu( new JobMenu(
+Menu get_jobs_menu(){
+  return new JobMenu(
     job_hand,
     players.get(local_id),
     job_position,
@@ -91,8 +91,16 @@ void switch_to_jobs_menu(){
       }
     },
     holo_color
-  ) );
+  );
 }
+
+/**
+switches to a new jobs menu
+*/
+void switch_to_jobs_menu(){
+  switcher.switch_menu(get_jobs_menu());
+}
+
 
 /**
 Fails all cards plays in the given array that the player's can't afford
@@ -194,9 +202,13 @@ void draw() {
           // gameplay connection
           gp_sender = new GameplaySender(con, local_id, opponents, int(resp.get("turn")));
           
-          // go into the game menu; currently starts by choosing your first job
+          // go into the game menu; currently starts with a welcome menu followed by choosing your first job
           main_menu = new MainMenu(opponents, local_player, hand, switcher, gp_sender, holo_color);
-          switch_to_jobs_menu();
+          Menu jobs_menu = get_jobs_menu();
+          switcher.switch_menu(new AlertMenu(
+            welcome_text+"Relay located. Link secured. Forign parties identified. Comsnet established. The game is afoot .Agent "+local_player.get_id()+".. Best of luck.",
+            holo_color, switcher.create_button_handler(jobs_menu)
+          ));
           break;
 
         // TELL THE CLIENT CARDS HAVE BEEN PLAYED 
