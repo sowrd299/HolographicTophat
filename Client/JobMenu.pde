@@ -25,7 +25,11 @@ class JobMenu extends Menu {
         Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
         status_button = new BackgroundButton(
             status_rect,
-            (player.will_complete_job()? "You are ready for your next job." : "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Pogress)",
+            cont_job == null ?
+            "Select a job to begin." :
+                ((player.will_complete_job()? 
+                    "You are ready for your next job." :
+                    "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Pogress on current job)"),
             holo_color,
             null,
             font_size,

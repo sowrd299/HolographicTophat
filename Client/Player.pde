@@ -125,13 +125,15 @@ class Player{
             Stat agents = c.get_stat_object(STAT_AGENTS);
             for(String agent_type : agents.get_stats()) {
 
+                String assigned_agent_type = agent_type;
+
                 if(!available.containsKey(agent_type)){
                     // if we know we don't have any agents of a type b/c it's not even in the map,
                     //      just asign all purpose agents from the get-go
-                    agent_type = AGENT_ALL_PURPOSE; 
+                    assigned_agent_type = AGENT_ALL_PURPOSE; 
                 }
 
-                available.put(agent_type, available.get(agent_type) - agents.get_stat(agent_type).get());
+                available.put(assigned_agent_type, available.get(assigned_agent_type) - agents.get_stat(agent_type).get());
             }
         }
 
@@ -142,7 +144,7 @@ class Player{
             }
         }
 
-        System.out.println(available);
+        System.out.println("Calculated agent assignment totals: "+available);
 
         // because of the last step, if we have enough all purpse agents, we have enough agents
         return available.get(AGENT_ALL_PURPOSE) >= 0;

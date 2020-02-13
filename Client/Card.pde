@@ -114,7 +114,7 @@ class Card {
 
 class ManeuverCard extends Card {
 
-    ManeuverCard(String id, int cunning, int force, int stealth){
+    ManeuverCard(String id, int cunning, int force, int stealth, String agent_type, int agent_val){
         super(id);
 
         stats.set_stat(STAT_CUNNING, cunning);
@@ -123,23 +123,32 @@ class ManeuverCard extends Card {
 
         // placeholder team of agents
         Stat agents = new Stat();
-        agents.set_stat("Sailor",2);
+        agents.set_stat(agent_type, agent_val);
         stats.set_stat(STAT_AGENTS, agents);
     }
 
     ManeuverCard(String id){
-        this(id, 3, 2, 1);
+        this(id, 3, 2, 1, "Sailor", 2);
+    }
+
+    ManeuverCard(String id, int cunning, int force, int stealth){
+        this(id, cunning, force, stealth, "Goon", 0);
     }
 
 }
 
 class JobCard extends Card {
 
-    JobCard(String id){
+    JobCard(String id, int cunning, int patience, int reward){
         super(id);
-        stats.set_stat(STAT_CUNNING, 8);
-        stats.set_stat(STAT_REWARD, 3);
-        stats.set_stat(STAT_PATIENCE,4);
+
+        stats.set_stat(STAT_CUNNING, cunning);
+        stats.set_stat(STAT_PATIENCE, patience);
+        stats.set_stat(STAT_REWARD, reward);
+    }
+
+    JobCard(String id){
+        this(id, 8, 5, 3);
     }
 
 }
@@ -167,15 +176,21 @@ class CardLoader {
         cards = new HashMap<String, Card>();
         
         // testing maneuvers
-        register(new ManeuverCard("Do as Mantis"));
-        register(new ManeuverCard("Relay Access"));
-        register(new ManeuverCard("Arcus Ar"));
-        register(new ManeuverCard("Call the Navosc"));
+        register(new ManeuverCard("Do as Mantis",           2,3,1, "Seducer",2));
+        register(new ManeuverCard("Relay Access",           4,0,2, "Hacker",2));
+        register(new ManeuverCard("The Arcus 2's Aid",      2,2,2, "Sailor",2));
+        register(new ManeuverCard("Cannon Fire",            4,4,0, "Sailor",3));
+        register(new ManeuverCard("Heavy Fire",             2,6,0, "Sailor",3));
+        register(new ManeuverCard("Dogfight",               0,3,3, "Sailor",2));
+        register(new ManeuverCard("Turret Fire",            2,2,0, "Sailor",1));
+        register(new ManeuverCard("Boarding",               1,3,0, "Sailor",1));
+        register(new ManeuverCard("Alert DJNF",             1,1,0, "Goon",0));
 
         // testing jobs
-        register(new JobCard("Patient Stalking"));
-        register(new JobCard("Club Infiltration"));
-        register(new JobCard("Assassination in Nightlife"));
+        register(new JobCard("Patient Stalking",            6,6,2));
+        register(new JobCard("Rocketeering",                8,5,3));
+        register(new JobCard("Club Infiltration",           7,5,4));
+        register(new JobCard("Assassination in Nightlife",  5,2,6));
     }
 
     void register(Card card){

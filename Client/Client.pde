@@ -32,6 +32,9 @@ CardLoader cl;
 // gameplay variables for jobs
 PlayPosition job_position;
 
+// playtesting variables
+Deck test_deck;
+
 // TOP-LEVEL CONTROL FUNCTIONS
 
 void setup(){
@@ -58,6 +61,17 @@ void setup(){
   job_hand.add_card(cl.load_card("Patient Stalking"));
   job_hand.add_card(cl.load_card("Club Infiltration"));
   job_hand.add_card(cl.load_card("Assassination in Nightlife"));
+
+  // testing deck
+  test_deck = new Deck();
+  test_deck.add_card(cl.load_card("Do as Mantis"),3);
+  test_deck.add_card(cl.load_card("Relay Access"),3);
+  test_deck.add_card(cl.load_card("The Arcus 2's Aid"),5);
+  test_deck.add_card(cl.load_card("Cannon Fire"),3);
+  test_deck.add_card(cl.load_card("Heavy Fire"),3);
+  test_deck.add_card(cl.load_card("Turret Fire"),3);
+  test_deck.add_card(cl.load_card("Boarding"),3);
+  test_deck.add_card(cl.load_card("Alert DJNF"),2);
 
 }
 
@@ -169,11 +183,7 @@ void draw() {
           players = new HashMap<String, Player>();
 
           // the testing deck
-          Deck deck = new Deck();
-          deck.add_card(cl.load_card("Do as Mantis"),5);
-          deck.add_card(cl.load_card("Relay Access"),5);
-          deck.add_card(cl.load_card("Arcus Ar"),5);
-          deck.add_card(cl.load_card("Call the Navosc"),5);
+          Deck deck = test_deck;
           deck.shuffle();
 
           // setup the local player
@@ -350,10 +360,10 @@ class MenuSwitcher{
   }
 
   void switch_menu(Menu m) {
-    System.out.println("Switching menu...");
+    //System.out.println("Switching menu...");
     menu = m;
     menu.init();
-    System.out.println("...switched!");
+    //System.out.println("...switched!");
   }
 
   /**
