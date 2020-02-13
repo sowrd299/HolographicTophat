@@ -38,9 +38,9 @@ class JobMenu extends Menu {
 
         job_buttons = new Button[cards.length];
         for(; i < job_buttons.length; i++){
-            job_buttons[i] = new TicketButton(
+            job_buttons[i] = new JobCardButton(
+                cards[i],
                 rects[i],
-                cards[i].get_id(),
                 holo_color,
                 new JobButtonHandler(cards[i]),
                 margin/10, 2*margin/3
@@ -102,9 +102,9 @@ class JobMenu extends Menu {
                 null,
                 margin/3, 3*margin
             );
-            card_button = new TicketButton(
+            card_button = new JobCardButton(
+                cont_job,
                 r.get_section(0, 0.34, 1, 0.64),
-                cont_job != null ? cont_job.get_id() : "Nothing to Continue",
                 holo_color,
                 null,
                 margin/3, 3*margin
