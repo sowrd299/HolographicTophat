@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
 A class for displaying alerts to the user
 If "when_finished" is null, the alert will last
@@ -23,13 +25,16 @@ class AlertMenu extends Menu{
     void init(){
 
         int tab_w = (int)(r.w * 0.15);
+        int text_h = (int)(r.h * 0.7);
 
         Rect area = new Rect(margin + tab_w, r.h/4, r.w-tab_w-2*margin, r.h/2);
 
         bg = new BackgroundButton(area, text, holo_color, null, r.h/36, margin/3, 8*margin, 2*margin);
 
         // the buttons for switching tabs
-        // hm....
+        ArrayList<String> lines = bg.to_lines(text);
+        ArrayList<String> pages = new ArrayList<String>(); // the text for each tab
+        int lines_per_page = text_h/bg.get_font_size();
 
         // the finished button
         if(when_finished != null){

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 // a display class for animated dots that acknowledge a button being pressed
 
 class AckDots {
@@ -81,6 +83,10 @@ class Button {
         this(rect, label, null, c, handler);
     }
 
+    String get_font_size(){
+        return font_size;
+    }
+
     String get_label(){
         return label;
     }
@@ -89,15 +95,26 @@ class Button {
         this.label = label;
     }
 
+    /**
+    Returns the width of the area the label will be printed in
+    */
+    int get_label_width(){
+        r.w - 2*margin
+    }
+
+    void setup_label_draw(){
+        textFont(font, font_size);
+        textAlign(CENTER);
+        fill(c, 200);
+    }
+
     void draw(){
         if(box != null) box.draw();
         // draw the label
         String text = get_label();
         if(text.length() > 0){
-            textFont(font, font_size);
-            textAlign(CENTER);
-            fill(c, 200);
-            text(text, r.x + margin, r.y+ 1.5*margin, r.w - 2*margin, r.h);
+            setup_label_draw();
+            text(text, r.x + margin, r.y+ 1.5*margin, get_label_width(), r.h);
         }
     }
 
@@ -109,6 +126,40 @@ class Button {
         return false;
     }
     
+    /**
+    Returns the given text wrapped into lines,
+        as it will be rendered by this button
+    */
+    protected ArrayList<String> to_lines(text){
+
+        setup_label_draw();
+        int wrap_width = get_label_width();
+
+        ArrayList<String> r = new ArrayList<String>(); // the broken up wrapped lines
+        String[] lines = text.split("\n", 0); // the original lines of text
+
+        // for each line
+        for(String line : lines){
+
+            String new_line = "";
+            float w = 0;
+
+            // for each character
+            for(int i = 0; i < line.length; i++){
+                int char_width += textWidth(line[i]);
+
+                // if we can't fit that char on the current line, wrapp
+                if(w + char_width > wrap_width){
+                    r.add(new_line);
+                    new_line = "" ;
+                    w = 0;
+                }
+                new_line += line[i];
+                w += char_width; 
+            }
+        }
+        return r;
+    }
 }
 
 /**
