@@ -16,7 +16,7 @@ class Match():
     returns the number of the collected clients
     '''
     def get_connected_count(self):
-        return len(self.connect_clients)
+        return len(self.connected_clients)
 
     '''
     returns if everyone is locked in
