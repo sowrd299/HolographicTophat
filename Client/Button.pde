@@ -83,7 +83,7 @@ class Button {
         this(rect, label, null, c, handler);
     }
 
-    String get_font_size(){
+    int get_font_size(){
         return font_size;
     }
 
@@ -99,7 +99,7 @@ class Button {
     Returns the width of the area the label will be printed in
     */
     int get_label_width(){
-        r.w - 2*margin
+        return r.w - 2*margin;
     }
 
     void setup_label_draw(){
@@ -118,6 +118,10 @@ class Button {
         }
     }
 
+    boolean click(){
+        return this.click(r.x + 1, r.y + 1);
+    }
+
     boolean click(int x, int y){
         if(handler != null && r.touches_point(x,y)){
             handler.on_click();
@@ -129,8 +133,9 @@ class Button {
     /**
     Returns the given text wrapped into lines,
         as it will be rendered by this button
+    TODO: does not use actual wrapping, but it should
     */
-    protected ArrayList<String> to_lines(text){
+    protected ArrayList<String> to_lines(String text){
 
         setup_label_draw();
         int wrap_width = get_label_width();
@@ -145,8 +150,8 @@ class Button {
             float w = 0;
 
             // for each character
-            for(int i = 0; i < line.length; i++){
-                int char_width += textWidth(line[i]);
+            for(int i = 0; i < line.length(); i++){
+                float char_width = textWidth(line.charAt(i));
 
                 // if we can't fit that char on the current line, wrapp
                 if(w + char_width > wrap_width){
@@ -154,9 +159,11 @@ class Button {
                     new_line = "" ;
                     w = 0;
                 }
-                new_line += line[i];
+                new_line += line.charAt(i);
                 w += char_width; 
             }
+
+            r.add(new_line + "\n");
         }
         return r;
     }

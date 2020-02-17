@@ -24,8 +24,8 @@ class AlertMenu extends Menu{
 
     void init(){
 
-        int tab_w = (int)(r.w * 0.15);
-        int text_h = (int)(r.h * 0.7);
+        int tab_w = (int)(r.w * 0.075);
+        int text_h = (int)(r.h * 0.3);
 
         Rect area = new Rect(margin + tab_w, r.h/4, r.w-tab_w-2*margin, r.h/2);
 
@@ -33,8 +33,30 @@ class AlertMenu extends Menu{
 
         // the buttons for switching tabs
         ArrayList<String> lines = bg.to_lines(text);
-        ArrayList<String> pages = new ArrayList<String>(); // the text for each tab
         int lines_per_page = text_h/bg.get_font_size();
+        int num_pages = 1+lines.size()/lines_per_page; // TODO: this page estimate fails when lines_per_page is a factor of lines
+        Rect[] tab_rects = create_rects(margin,r.h/4+margin,tab_w,tab_w,-margin/2,-margin/2,num_pages,1);
+        tab_buttons = new Button[num_pages]; 
+
+        //System.out.println("Setting up allert pages: Lines: " + lines + "; Lines per page: "+lines_per_page+"; Num pages: "+num_pages);
+
+        for(int i = 0; i < num_pages; i++){
+            String page_text = "";
+            for(int j = i*lines_per_page; j < min((i+1)*lines_per_page, lines.size()); j++){
+                page_text += lines.get(j);
+            }
+
+            tab_buttons[i] = new Button(
+                tab_rects[i],
+                "",
+                new TabBox(tab_rects[i], holo_color, margin/10, 2*margin/3),
+                holo_color,
+                new TabButtonHandler(page_text, i)
+            );
+
+        }
+
+        tab_buttons[0].click();
 
         // the finished button
         if(when_finished != null){
@@ -51,9 +73,9 @@ class AlertMenu extends Menu{
 
     Button[] get_buttons(){
         if(finished_button == null){
-            return new Button[]{bg};
+            return (Button[])concat(new Button[]{bg}, tab_buttons);
         }else{
-            return new Button[]{bg, finished_button};
+            return (Button[])concat(new Button[]{bg, finished_button}, tab_buttons);
         }
     }
 

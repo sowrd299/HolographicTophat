@@ -50,7 +50,18 @@ void setup(){
   holo_color = color(240,60,60);
   bg = new StarFieldBG();
   switcher = new MenuSwitcher();
-  switcher.switch_menu(new AlertMenu(welcome_text+"Connecting to insterstellar coms relay...", holo_color, null));
+  //switcher.switch_menu(new AlertMenu(welcome_text+, holo_color, null));
+  switcher.switch_menu(new AlertMenu(
+    welcome_text+"Connecting to insterstellar coms relay...\n\n:brief:\n"+
+    "This is not a glorious age. The Last Golden Age of Humanity, an era of unmatched prosperity,"+
+    " has ended. Civilization is waning, governments crumbling, and the rule of crime rising. "+
+    "Powerful underworld factions, known as déod·Hüs·set—the Houses, have come to power. "+
+    "The once mighty Senate of Jupitov and Monarchy of Cïjang are puppets in the House's twisted games. "+
+    "The poor are destitute and the wealthy are corrupt. Technology and learning exist only to advance the agendas of those in power. "+
+    "Wars are fought in back alleys and secret apartments by leaders of industry and crime, and their soldiers die in gutters.\n"+
+    "Thus is the world of the Eleven Systems, at the dawn of the so-called Era of the Houses.",
+    holo_color, null
+  ));
 
   // setup gameplay
   cl = new CardLoader();
