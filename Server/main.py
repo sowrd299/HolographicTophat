@@ -108,4 +108,5 @@ modes = {
 if __name__ == "__main__":
     mode = modes[sys.argv[1].lower() if len(sys.argv) > 1 else DEFAULT_MODE]
     size = int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_SIZE
+    print("Running in mode: {0}, with game size: {1}".format(mode,size))
     main(mode, size)

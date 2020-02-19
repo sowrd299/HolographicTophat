@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.lang.Iterable;
 
 // Networking variables
-String server_ip = "192.168.1.65"; // the ip of the server computer
+String server_ip = "108.88.231.121"; //"192.168.1.65"; // the ip of the server computer
 Connection con;
 GameplaySender gp_sender;
 
