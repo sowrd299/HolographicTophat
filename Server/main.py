@@ -1,4 +1,4 @@
-from connection import ServerAcceptConnection
+from connection import ServerLoginConnection, ServerAcceptConnection
 from message import Message
 from threading import Thread
 from match import Match
@@ -28,8 +28,11 @@ class MatchMakingQueue():
     Actually adds a given client to a given match
     '''
     def _add_to_match(self, match, client):
+
         # start the thread for that client in that match
         Thread(target=match.manage_client, args=(client,self.client_ids[self.client_ind])).start()
+        #match.manage_client(client, self.client_ids[self.client_ind])
+
         # increments the ID system
         # TODO: improve the client ind system for multiple ongoing matches
         self.client_ind += 1
@@ -38,7 +41,7 @@ class MatchMakingQueue():
     '''
     Tries to begin a new match from clients in the queue
     Match will have the specified number of players, or the default if none given
-    returns the match, None if it fails
+    returns (the match, clients in it), (None, []) if it fails
     '''
     def make_match(self, size=-1):
 
@@ -46,14 +49,16 @@ class MatchMakingQueue():
             size = self.match_size
 
         if len(self.clients) < size:
-            return None
+            return (None, [])
 
         match = Match(self.client_ids)
+        clients = []
         while match.get_connected_count() < size:
+            client = self.clients.pop(0)
             self._add_to_match(match, self.clients.pop(0))
+            clients.append(client)
 
-        return match
-
+        return (match, clients)
 
 '''
 A version of the match making queue that doesn't wait for everyone to join
@@ -83,14 +88,21 @@ def main(match_maker_class, match_size):
         "Jarli"
     ]
 
-    con = ServerAcceptConnection()
+    con = ServerLoginConnection()
     match_maker = match_maker_class(match_size, client_ids)
-    print("Listening...")
-    while True:
-        c = con.accept_client()
+
+    def make_match(c):
         print("A client connected!")
         match_maker.enqueue(c)
         match_maker.make_match()
+
+    print("Listening...")
+    while True:
+        c = con.accept_client(make_match)
+        if c != None:
+            make_match(c)
+        else:
+            print("Some thing happened. A client may be logging in!")
 
 
 # setup modes the server can opperate in

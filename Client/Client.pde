@@ -183,6 +183,14 @@ void draw() {
       System.out.println("Recieved message: "+resp.to_string());
       switch (resp.get("type")) {
 
+        // WHEN TOLD TO LOGIN BY THE SERVER:
+
+        case "please_login":
+          Message msg = new Message("login");
+          msg.put("user_id", "me!!!!!!");
+          con.send(msg);
+          break;
+
         // WHEN TOLD TO WAIT BY THE SERVER:
         case "wait":
           switcher.switch_menu(new AlertMenu(welcome_text+"Relay located. Link secured.\nAwaiting handshake from forign parties...", holo_color, null));

@@ -1,5 +1,6 @@
 import socket
 from message import Message
+from threading import Thread
 
 
 '''
@@ -73,12 +74,15 @@ class Connection():
     def close(self):
         self.socket.close()
 
+
+
 '''
 A class for connecting the server to accept connections with.
 '''
 class ServerAcceptConnection(Connection):
 
     max_clients = 2
+    con_class = Connection
 
     def __init__(self):
 
@@ -93,4 +97,80 @@ class ServerAcceptConnection(Connection):
     def accept_client(self):
 
         (client_socket, client_addr) = self.socket.accept()
-        return Connection(client_socket)
+        return self.con_class(client_socket)
+
+
+
+'''
+THE LOGIN SYSTEM
+'''
+
+
+'''
+A connection that is persistent for one user
+    accross multiple sessions
+'''
+class LoggedInConnection(Connection):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_id = ""
+
+    def get_id(self):
+        return self.user_id 
+
+    def is_logged_in(self):
+        return self.get_id()
+
+    '''
+    Logs in a given client
+    '''
+    def login(self):
+
+        # send
+        self.send(Message(
+            type = "please_login"
+        ))
+
+        # recieve
+        msg = None
+        while not msg:
+            msg = self.recieve()
+
+        # process
+        if msg.get("type") == "login":
+            self.user_id = msg.get("user_id")
+        else:
+            raise RuntimeError("Unexpected Message Type")
+
+
+'''
+A version of ServerAcceptConnection that asyncronously
+    logs in clients as they connect
+'''
+class ServerLoginConnection(ServerAcceptConnection):
+
+    con_class = LoggedInConnection
+
+    def __init__(self):
+        super().__init__()
+
+    '''
+    Takes a callable to call on  a newly logged in client
+    If not provided, will return login the client in the main thread
+    '''
+    def accept_client(self, thread_target=None):
+        con = super().accept_client()
+
+        if thread_target:
+
+            def func(): # the thread callback function
+                con.login()
+                thread_target(con)
+
+            Thread(target=func, args=tuple()).start()
+            return None
+
+        else:
+            con.login()        
+            return con
