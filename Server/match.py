@@ -65,7 +65,7 @@ class Match():
             type = "setup",
             you_are = player_id,
             other_players = ",".join(c for c in self.player_ids if not c == player_id), # TODO: don't reference the global here
-            turn = str(self.get_turn()) # tell the client where to start the turn count
+            turn = "0" #str(self.get_turn()) # tell the client where to start the turn count
         ))
 
     '''
@@ -122,6 +122,7 @@ class Match():
 
                     # update lockins
                     if msg.get("lockin") == "true":
+                        print("...{0} is locking in...".format(player_id))
                         self.lockedin_ids.add(player_id)
 
                 self.update()

@@ -31,7 +31,7 @@ class MatchMakingQueue():
         user_id = client.get_id()
         if(user_id in self.player_assignments):
             player_id, match = self.player_assignments[user_id] 
-            match.manage_client(client, player_id)
+            self._add_to_match(match, client, player_id)
 
         # if couldn't queue for a new game
         else:
@@ -48,15 +48,18 @@ class MatchMakingQueue():
         # send the wait message
         client.send(Message(type="wait"))
 
+    def _add_to_match(self, match, client, player_id):
+        Thread(target=match.manage_client, args=(client, player_id)).start()
+
     '''
     Actually adds a given client to a given match
     '''
-    def _add_to_match(self, match, client):
+    def _add_to_new_match(self, match, client):
 
         player_id = self.client_ids[self.client_ind]
 
         # start the thread for that client in that match
-        Thread(target=match.manage_client, args=(client, player_id)).start()
+        self._add_to_match(match, client, player_id)
         #match.manage_client(client, self.client_ids[self.client_ind])
 
         self.clients_lock.acquire()
@@ -88,7 +91,7 @@ class MatchMakingQueue():
             self.clients_lock.acquire()
             client = self.clients.pop(0)
             self.clients_lock.release()
-            self._add_to_match(match, client)
+            self._add_to_new_match(match, client)
             clients.append(client)
 
         return (match, clients)
