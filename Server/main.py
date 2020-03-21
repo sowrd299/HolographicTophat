@@ -12,12 +12,31 @@ class MatchMakingQueue():
 
     def __init__(self, match_size, client_ids):
         self.clients = [] # the queue of clients
-        self.match_size = match_size
-        self.client_ids = client_ids
+        self.match_size = match_size # the number to players to add to a match
+        self.client_ids = client_ids # player id's specifically
         self.client_ind = 0 # index of the current client
+
+        self.player_assignments = dict() # { user_id : (player_id, match) }
 
     '''
     Adds a client to the queue
+    If the user is already in a match, will just re-add them to that match
+    '''
+    def join(self, client):
+
+        # rejoin a game
+        user_id = client.get_id()
+        if(user_id in self.player_assignments):
+            player_id, match = self.player_assignments[user_id] 
+            match.manage_client(client, player_id)
+
+        # if couldn't queue for a new game
+        else:
+            self.enqueue(client)
+
+
+    '''
+    Adds a client to the queue. Forces joining a new game
     '''
     def enqueue(self, client):
         self.clients.append(client)
@@ -29,9 +48,14 @@ class MatchMakingQueue():
     '''
     def _add_to_match(self, match, client):
 
+        player_id = self.client_ids[self.client_ind]
+
         # start the thread for that client in that match
-        Thread(target=match.manage_client, args=(client,self.client_ids[self.client_ind])).start()
+        Thread(target=match.manage_client, args=(client, player_id)).start()
         #match.manage_client(client, self.client_ids[self.client_ind])
+
+        # record the assignment
+        self.player_assignments[client.get_id()] = (player_id, match)
 
         # increments the ID system
         # TODO: improve the client ind system for multiple ongoing matches
@@ -93,7 +117,7 @@ def main(match_maker_class, match_size):
 
     def make_match(c):
         print("A client connected!")
-        match_maker.enqueue(c)
+        match_maker.join(c)
         match_maker.make_match()
 
     print("Listening...")

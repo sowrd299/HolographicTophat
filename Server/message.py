@@ -48,6 +48,10 @@ class Message():
     def get(self, key):
         return self.data[key]
 
+    def set(self, key, value):
+        self.data[key] = value
+
+
     '''
     Returns a list of all keys that match a regex
     '''

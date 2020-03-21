@@ -184,10 +184,9 @@ void draw() {
       switch (resp.get("type")) {
 
         // WHEN TOLD TO LOGIN BY THE SERVER:
-
         case "please_login":
           Message msg = new Message("login");
-          msg.put("user_id", "me!!!!!!");
+          msg.put("user_id", "user" + random(4092));
           con.send(msg);
           break;
 

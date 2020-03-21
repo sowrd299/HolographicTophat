@@ -125,7 +125,8 @@ class LoggedInConnection(Connection):
     '''
     Logs in a given client
     '''
-    def login(self):
+    # TODO: enforce ID uniqueness
+    def login(self, unique = True):
 
         # send
         self.send(Message(
