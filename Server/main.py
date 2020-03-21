@@ -3,6 +3,7 @@ from message import Message
 from threading import Thread, Lock
 from match import Match
 
+import random
 import sys
 
 '''
@@ -65,7 +66,7 @@ class MatchMakingQueue():
         # increments the ID system
         # TODO: improve the client ind system for multiple ongoing matches
         self.client_ind += 1
-        self.client_ind %= len(self.client_ids)
+        self.client_ind %= self.match_size
         self.clients_lock.release()
 
     '''
@@ -81,7 +82,7 @@ class MatchMakingQueue():
         if len(self.clients) < size:
             return (None, [])
 
-        match = Match(self.client_ids)
+        match = Match(self.client_ids[:size])
         clients = []
         while match.get_connected_count() < size:
             self.clients_lock.acquire()
@@ -117,8 +118,13 @@ def main(match_maker_class, match_size):
         "Cler",
         "Sayngos",
         "Micu",
-        "Jarli"
+        "Jarli",
+        "Albir",
+        "Tanus",
+        "Risia",
+        "Liju"
     ]
+    random.shuffle(client_ids)
 
     con = ServerLoginConnection()
     match_maker = match_maker_class(match_size, client_ids)
@@ -131,10 +137,10 @@ def main(match_maker_class, match_size):
     print("Listening...")
     while True:
         c = con.accept_client(make_match)
-        if c != None:
-            make_match(c)
-        else:
+        if c == None:
             print("Some thing happened. A client may be logging in!")
+        else:
+            make_match(c)
 
 
 # setup modes the server can opperate in
