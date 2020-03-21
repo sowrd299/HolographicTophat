@@ -51,6 +51,8 @@ class Menu extends CompositButton {
     MenuSwitcher menu_switcher;
     color holo_color;
 
+    ArrayList<Button> buttons;
+
     Menu() {
         super(get_screen_rect(), "", color(0), null);
     }
@@ -61,6 +63,28 @@ class Menu extends CompositButton {
         this.holo_color = holo_color;
         margin *= 3;    
         font_size = r.h/36;
+    }
+
+    /**
+    Restarts the register of buttons
+    */
+    void start_buttons(){
+        buttons = new ArrayList<Button>();
+    }
+
+    /**
+    Logs a new button
+    */
+    void add_button(Button b){
+        buttons.add(b);
+    }
+
+    /**
+    Returns the logged buttons
+    */
+    Button[] get_buttons(){
+        Button[] b = new Button[0];
+        return buttons.toArray(b);
     }
 
     /**

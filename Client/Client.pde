@@ -185,9 +185,7 @@ void draw() {
 
         // WHEN TOLD TO LOGIN BY THE SERVER:
         case "please_login":
-          Message msg = new Message("login");
-          msg.put("user_id", "user" + random(4092));
-          con.send(msg);
+          switcher.switch_menu(new LoginMenu(con, holo_color));
           break;
 
         // WHEN TOLD TO WAIT BY THE SERVER:
