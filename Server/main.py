@@ -1,6 +1,6 @@
 from connection import ServerLoginConnection, ServerAcceptConnection
 from message import Message
-from threading import Thread
+from threading import Thread, Lock
 from match import Match
 
 import sys
@@ -17,6 +17,8 @@ class MatchMakingQueue():
         self.client_ind = 0 # index of the current client
 
         self.player_assignments = dict() # { user_id : (player_id, match) }
+
+        self.clients_lock = Lock()
 
     '''
     Adds a client to the queue
@@ -39,7 +41,9 @@ class MatchMakingQueue():
     Adds a client to the queue. Forces joining a new game
     '''
     def enqueue(self, client):
+        self.clients_lock.acquire()
         self.clients.append(client)
+        self.clients_lock.release()
         # send the wait message
         client.send(Message(type="wait"))
 
@@ -54,6 +58,7 @@ class MatchMakingQueue():
         Thread(target=match.manage_client, args=(client, player_id)).start()
         #match.manage_client(client, self.client_ids[self.client_ind])
 
+        self.clients_lock.acquire()
         # record the assignment
         self.player_assignments[client.get_id()] = (player_id, match)
 
@@ -61,6 +66,7 @@ class MatchMakingQueue():
         # TODO: improve the client ind system for multiple ongoing matches
         self.client_ind += 1
         self.client_ind %= len(self.client_ids)
+        self.clients_lock.release()
 
     '''
     Tries to begin a new match from clients in the queue
@@ -78,8 +84,10 @@ class MatchMakingQueue():
         match = Match(self.client_ids)
         clients = []
         while match.get_connected_count() < size:
+            self.clients_lock.acquire()
             client = self.clients.pop(0)
-            self._add_to_match(match, self.clients.pop(0))
+            self.clients_lock.release()
+            self._add_to_match(match, client)
             clients.append(client)
 
         return (match, clients)
