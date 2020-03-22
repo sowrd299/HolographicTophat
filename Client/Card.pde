@@ -180,7 +180,7 @@ class CardLoader {
         register(new ManeuverCard("Relay Access",           0,0,3, "Hacker",2));
         register(new ManeuverCard("Dogfight",               0,2,0, "Sailor",2));
         register(new ManeuverCard("The Arcus 2's Aid",      2,1,0, "Sailor",2));
-        register(new ManeuverCard("Heavy Fire",             0,4,0, "Sailor",3));
+        register(new ManeuverCard("Heavy Fire",             0,3,0, "Sailor",3));
         register(new ManeuverCard("Turret Fire",            0,1,0, "Sailor",1));
         register(new ManeuverCard("Boarding",               2,0,0, "Sailor",1));
         register(new ManeuverCard("Supressive Fire",        0,0,3, "Sailor",2));

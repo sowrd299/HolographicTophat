@@ -68,7 +68,7 @@ class Button {
         this.r= rect;
         this.label = label;
         this.box = box;
-        this.margin = height/120; // TODO: ideally would not need to use "height" here
+        this.margin = min(r.h/8, height/120); // TODO: ideally would not need to use "height" here
 
         font = loadFont("TlwgTypist-Bold-48.vlw");
         font_size = r.h;

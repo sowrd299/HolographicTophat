@@ -53,12 +53,14 @@ class CardButton extends CompositButton {
     protected MainButton main_button;
     protected TitleButton title_button;
     protected StatButton[] stat_buttons;
+    protected Button copies_button;
 
-    CardButton(Card card, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+    CardButton(Card card, int copies, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
         super(rect, "", c, handler);
         this.card = card;
 
         if(card != null){
+            // setup main button
             main_button = new MainButton(rect, c, stroke_weight, corner_size);
             // setup stat buttons
             // TODO: make this less redundent maybe?
@@ -90,18 +92,27 @@ class CardButton extends CompositButton {
                 new Rect( inner_left_rect.x + inner_left_rect.w,  inner_left_rect.y, inner_right_rect.x - inner_left_rect.x - inner_left_rect.w, r.h/3),
                 c
             );
+
+            // setup the copies button
+            copies_button = new TicketButton(rect.get_section(0.85,0.8,0.15,0.3), "x" + copies, c, null, stroke_weight, corner_size/3);
+
         }else{
             main_button = new MainButton(rect, this.c, stroke_weight, corner_size);
         }
     }
 
+    CardButton(Card card, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+        this(card, 1, rect, c, handler, stroke_weight, corner_size);
+    }
+
     Button[] get_buttons(){
         if(card != null){
-            Button[] r = new Button[2 + stat_buttons.length];
+            Button[] r = new Button[3 + stat_buttons.length];
             r[0] = main_button;
             r[1] = title_button;
+            r[2] = copies_button;
             for(int i = 0; i < stat_buttons.length; i++){
-                r[2+i] = stat_buttons[i];
+                r[3+i] = stat_buttons[i];
             }
             return r;
         }else{
@@ -132,6 +143,10 @@ class ManeuverCardButton extends CardButton {
 
     ManeuverCardButton(Card card, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
         super(card, rect, c, handler, stroke_weight, corner_size);
+    }
+
+    ManeuverCardButton(Card card, int copies, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
+        super(card, copies, rect, c, handler, stroke_weight, corner_size);
     }
 
     Stat get_left_stats(){
