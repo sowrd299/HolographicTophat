@@ -28,7 +28,7 @@ class JobMenu extends Menu {
             cont_job == null ?
             "Select a job to begin." :
                 ((player.will_complete_job()? 
-                    "You are ready for your next job." :
+                    ":JOB COMPLETE!:\nYou are ready for your next job." :
                     "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Pogress on current job)"),
             holo_color,
             null,

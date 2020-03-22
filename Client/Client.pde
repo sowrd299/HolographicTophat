@@ -71,18 +71,19 @@ void setup(){
   job_hand = new Hand();
   job_hand.add_card(cl.load_card("Patient Stalking"));
   job_hand.add_card(cl.load_card("Club Infiltration"));
+  job_hand.add_card(cl.load_card("Rocketeering"));
   job_hand.add_card(cl.load_card("Assassination in Nightlife"));
 
   // testing deck
   test_deck = new Deck();
-  test_deck.add_card(cl.load_card("Do as Mantis"),3);
-  test_deck.add_card(cl.load_card("Relay Access"),3);
-  test_deck.add_card(cl.load_card("The Arcus 2's Aid"),5);
-  test_deck.add_card(cl.load_card("Cannon Fire"),3);
-  test_deck.add_card(cl.load_card("Heavy Fire"),3);
-  test_deck.add_card(cl.load_card("Turret Fire"),3);
-  test_deck.add_card(cl.load_card("Boarding"),3);
-  test_deck.add_card(cl.load_card("Alert DJNF"),2);
+  test_deck.add_card(cl.load_card("Do as Mantis"),2);
+  test_deck.add_card(cl.load_card("Relay Access"),2);
+  test_deck.add_card(cl.load_card("The Arcus 2's Aid"),3);
+  test_deck.add_card(cl.load_card("Supressive Fire"),2);
+  test_deck.add_card(cl.load_card("Heavy Fire"),2);
+  test_deck.add_card(cl.load_card("Turret Fire"),2);
+  test_deck.add_card(cl.load_card("Boarding"),2);
+  test_deck.add_card(cl.load_card("Alert DJNF"),1);
 
 }
 
@@ -190,7 +191,7 @@ void draw() {
 
         // WHEN TOLD TO WAIT BY THE SERVER:
         case "wait":
-          switcher.switch_menu(new AlertMenu(welcome_text+"Relay located. Link secured.\nAwaiting handshake from forign parties...", holo_color, null));
+          switcher.switch_menu(new AlertMenu(welcome_text+"Relay located. Link secured.\nAwaiting handshake from foreign parties...", holo_color, null));
           break;
 
         // SETS UP THE GAME 
@@ -232,7 +233,7 @@ void draw() {
           main_menu = new MainMenu(opponents, local_player, hand, switcher, gp_sender, holo_color);
           Menu jobs_menu = get_jobs_menu();
           switcher.switch_menu(new AlertMenu(
-            welcome_text+"Relay located. Link secured. Forign parties identified. Comsnet established. The game is afoot .Agent "+local_player.get_id()+".. Best of luck.",
+            welcome_text+"Relay located. Link secured. Foreign parties identified. Comsnet established. The game is afoot .Agent "+local_player.get_id()+".. Best of luck.",
             holo_color, switcher.create_button_handler(jobs_menu)
           ));
           break;
