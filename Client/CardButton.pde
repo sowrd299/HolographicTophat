@@ -33,9 +33,19 @@ class CardButton extends CompositButton {
 
         StatButton(Rect r, String label, Stat stat, color c){
             super(r, "", c, null);
-            font = loadFont("OldeEnglish-Regular-48.vlw");
+            this.font = loadFont("OldeEnglish-Regular-48.vlw");
             this.stat = stat;
-            this.label_button = new Button(r.get_section(0,0.66,1,0.33), label, c, null);
+
+            // dim self if value = 0
+            if(stat.get() == 0){
+                this.c = color(red(this.c), green(this.c), blue(this.c), 100);
+            }
+
+            // shrink font size to fit all digits
+            shrink_font_to_fit();
+
+            // create the label button
+            this.label_button = new Button(r.get_section(0,0.66,1,0.33), label, this.c, null);
         }
 
         String get_label(){
@@ -154,7 +164,7 @@ class ManeuverCardButton extends CardButton {
     }
 
     Stat get_right_stats(){
-        return card.get_stat_subset(new String[]{STAT_CUNNING, STAT_FORCE, STAT_STEALTH});
+        return card.get_stat_subset(new String[]{STAT_STEALTH, STAT_FORCE, STAT_CUNNING});
     }
 
 }

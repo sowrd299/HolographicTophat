@@ -167,6 +167,21 @@ class Button {
         }
         return r;
     }
+
+    /**
+    Decreases font until the label fits on one line
+    */
+    void shrink_font_to_fit(int step){
+        setup_label_draw();
+        while(textWidth(get_label()) > get_label_width()){
+            this.font_size -= step;
+            setup_label_draw();
+        }
+    }
+
+    void shrink_font_to_fit(){
+        shrink_font_to_fit(5);
+    }
 }
 
 /**

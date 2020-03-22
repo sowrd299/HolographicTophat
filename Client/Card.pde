@@ -61,7 +61,7 @@ class Stat {
     }
 
     Stat get_subset(String[] stats){
-        Stat r = new Stat();
+        Stat r = new SortedStat(stats);
         for(String s : stats){
             r.set_stat(s, get_stat(s));
         }
@@ -74,6 +74,28 @@ class Stat {
 
     void set_stat(String stat, Stat s){
         components.put(stat, s);
+    }
+
+}
+
+/**
+A subclass of stat that keeps its component is a specific order
+*/
+class SortedStat extends Stat{
+
+    private String[] order;
+
+    SortedStat(String[] order){
+        super();
+        this.order = order;
+    }
+
+    /**
+    May return stats that in  fact don't exist
+    */
+    // TODO: change that
+    String[] get_stats(){
+        return order;
     }
 
 }
@@ -187,10 +209,10 @@ class CardLoader {
         register(new ManeuverCard("Alert DJNF",             1,1,0, "Goon",0));
 
         // testing jobs
-        register(new JobCard("Patient Stalking",            3,5,4));
-        register(new JobCard("Rocketeering",                5,4,6));
-        register(new JobCard("Club Infiltration",           4,4,7));
-        register(new JobCard("Assassination in Nightlife",  2,2,9));
+        register(new JobCard("Patient Stalking",            3,5,5));
+        register(new JobCard("Rocketeering",                5,4,7));
+        register(new JobCard("Club Infiltration",           4,4,9));
+        register(new JobCard("Assassination in Nightlife",  2,2,12));
     }
 
     void register(Card card){
