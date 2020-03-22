@@ -15,6 +15,8 @@ class CardPlay {
     protected Card card;
     protected boolean failed; // weather or not playing the card has failed
 
+    protected CardPlayResault resault;
+
     CardPlay(Player player, Card card){
         this.player = player;
         this.card = card;
@@ -42,6 +44,14 @@ class CardPlay {
         this.failed = true;
     }
 
+    boolean is_failed(){
+        return failed;
+    }
+
+    CardPlayResault get_resault(){
+        return resault;
+    }
+
 }
 
 class PlayAgainstCardPlay extends CardPlay {
@@ -57,7 +67,7 @@ class PlayAgainstCardPlay extends CardPlay {
         super.play(step);
         switch(step) {
             case "score":
-                if(!failed) against.play_card_against(player, card);
+                if(!failed) resault = against.play_card_against(player, card);
                 break;
         }
     }
@@ -74,7 +84,7 @@ class DefenseCardPlay extends CardPlay {
         super.play(step);
         switch(step) {
             case "setup":
-                if(!failed) player.play_defense(card);
+                if(!failed) resault = player.play_defense(card);
                 break;
             case "cleanup":
                 player.clear_defense();

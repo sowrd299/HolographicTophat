@@ -242,6 +242,7 @@ void draw() {
         case "card_play":
 
           String alert = "";
+          HashMap<CardPlay, String> card_plays_text = new HashMap<CardPlay, String>();
           boolean jobs_next = false; // if the next thing to happen is playing jobs
 
           ArrayList<CardPlay> card_plays = new ArrayList<CardPlay>();
@@ -252,25 +253,28 @@ void draw() {
             String card_id = resp.get(id + "_defense");
             if(card_id != null){
               Card c = cl.load_card(card_id);
-              card_plays.add(new DefenseCardPlay(players.get(id), c));
-              alert += player_name(id) + " defended with " + c.get_id() + ".\n";
+              CardPlay cp = new DefenseCardPlay(players.get(id), c);
+              card_plays.add(cp);
+              card_plays_text.put(cp, player_name(id) + " defended with " + c.get_id() + ".\n");
               jobs_next = true;
             }
           }
 
           // HANDLE PLAYING MANEUVERS AGAINST OTHER PLAYERS
           // TODO: parsing should probably get rolled in with gp_sender
+
           for(String k : resp.regex_get_keys(".*_to_.*")){
             // get the player ids for who played the card on who
             String[] ids = k.split("_to_",0);
             // get the card played
             Card c = cl.load_card(resp.get(k));
             // actually play the card
-            card_plays.add(new PlayAgainstCardPlay(players.get(ids[0]), players.get(ids[1]), c));
+            CardPlay cp = new PlayAgainstCardPlay(players.get(ids[0]), players.get(ids[1]), c);
+            card_plays.add(cp);
             // we now know the next step will be playing jobs
             jobs_next = true;
             // tell the player what happened
-            alert += player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n";
+            card_plays_text.put(cp, player_name(ids[0]) + " played " + c.get_id() + " against " + player_name(ids[1]) + ".\n");
           }
 
           // HANDLE AGENTS COSTS
@@ -282,10 +286,16 @@ void draw() {
             }
           }
 
-          // RESOLVE ALL THE CARD PLAYS
+          // RESOLVE ALL THE CARD PLAYS, STEP BY STEP
           for(String step : STEPS_CARD_PLAY){
             for(CardPlay cp : card_plays){
               cp.play(step);
+            }
+          }
+
+          for(CardPlay cp : card_plays){
+            if(!cp.is_failed()){
+              alert += card_plays_text.get(cp) + "(" + cp.get_resault().toString() + ")\n";
             }
           }
 

@@ -48,7 +48,7 @@ class AlertMenu extends Menu{
 
             tab_buttons[i] = new Button(
                 tab_rects[i],
-                "",
+                str(i+1),
                 new TabBox(tab_rects[i], holo_color, margin/10, 2*margin/3),
                 holo_color,
                 new TabButtonHandler(page_text, i)

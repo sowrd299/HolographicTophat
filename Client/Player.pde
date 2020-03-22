@@ -1,6 +1,51 @@
 import java.util.HashMap;
 
 /**
+Represents the outcome of a player playing a card
+*/
+class CardPlayResault{
+
+    public int progress;
+    public int damage_to_def;
+    public int defense_stealth_used;
+    public int damage_to_player;
+
+    CardPlayResault(int progress, int damage_to_def, int defense_stealth_used, int damage_to_player){
+        this.progress = progress;
+        this.damage_to_def = damage_to_def;
+        this.defense_stealth_used = defense_stealth_used;
+        this.damage_to_player = damage_to_player;
+    }
+
+    CardPlayResault(){
+        this(0,0,0,0);
+    }
+
+    String toString(){
+        String r = "";
+
+        if(progress != 0){
+            r += " " + progress + " progress.";
+        }
+        if(damage_to_def != 0){
+            r += " " + damage_to_def + " damage dealt.";
+        }else if(defense_stealth_used != 0){
+            r += " " + defense_stealth_used + " damage avoided.";
+        }
+        if(damage_to_player != 0){
+            r += " " + damage_to_player + " damage dealt back.";
+        }
+
+        if(r.equals("")){
+            r = " no effect.";
+        }
+
+        return r;
+    }
+
+}
+
+/**
 A class to represent a player's current gamestate
 Implements game logic
 */
@@ -14,6 +59,8 @@ class Player{
 
     private Card defense; // the card the player is currently playing as their defense
     private Card job; // the job the player is currently on
+
+    private int defense_stealth; // the amount of stealth the player has left on their current defense card
 
     Player(){
         progress = 0;
@@ -67,22 +114,41 @@ class Player{
     /**
     Manages what happens when a card is played against a player
     */
-    void play_card_against(Player played_by, Card c){
+    CardPlayResault play_card_against(Player played_by, Card c){
+
+        CardPlayResault r = new CardPlayResault();
+
         // decrement progress
-        progress -= c.get_stat(STAT_CUNNING);
-        // deal damage
-        take_damage(c.get_stat(STAT_FORCE) - defense.get_stat(STAT_STEALTH));
+        int progress = -1 * c.get_stat(STAT_CUNNING);
+        this.progress += progress;
+        r.progress = progress;
+        // deal damage to defender
+        if(c.get_stat(STAT_FORCE) > defense_stealth){
+            r.damage_to_def = take_damage(c.get_stat(STAT_FORCE) - defense_stealth);
+            r.defense_stealth_used = defense_stealth;
+            defense_stealth = 0;
+        }else{
+            int defense_stealth_used = c.get_stat(STAT_FORCE);
+            defense_stealth -= defense_stealth_used;
+            r.defense_stealth_used = defense_stealth_used;
+        }
+        // deal damage to attacker
         played_by.take_damage(defense.get_stat(STAT_FORCE) - c.get_stat(STAT_STEALTH));
+
+        return r;
     }
 
     /**
     Manages damage being dealt to this player
     Damage cannot result in gaining score
     Damage cannot result in having negative score
+    Return the damage dealt
     */
-    private void take_damage(int val){
-        score -= max(0, val);
+    private int take_damage(int val){
+        int damage = max(0, val);
+        score -= damage;
         score = max(score, 0);
+        return damage;
     }
 
     // DEFENDING WITH MANEUVERS
@@ -90,16 +156,19 @@ class Player{
     /**
     Manage what happens when a player sets a new defense
     */
-    void play_defense(Card c){
+    CardPlayResault play_defense(Card c){
         defense = c;
-        progress += defense.get_stat(STAT_CUNNING);
+        defense_stealth = defense.get_stat(STAT_STEALTH);
+        int progress = defense.get_stat(STAT_CUNNING);
+        this.progress += progress;
+        return new CardPlayResault(progress,0,0,0);
     }
 
     /**
     To be called after a card's defense seases to be relivant
     */
     void clear_defense(){
-        defense = new ManeuverCard("The-No-Card-Here-Card",0,0,0);
+        play_defense(new ManeuverCard("The-No-Card-Here-Card",0,0,0));
     }
 
     // MANAGING THE AGENT COST OF MANEUVERS
