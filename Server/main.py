@@ -105,10 +105,10 @@ class RollingMatchMakingQueue(MatchMakingQueue):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.match = Match(self.client_ids)
+        self.match = Match(self.client_ids[:self.match_size])
 
     def enqueue(self, client):
-        self._add_to_match(self.match, client)
+        self._add_to_new_match(self.match, client)
 
     def make_match(self, _=None):
         return self.match
