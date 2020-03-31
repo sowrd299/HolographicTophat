@@ -11,6 +11,13 @@ class Hand {
         this.cards = new ArrayList<Card>();
     }
 
+    Hand(Hand hand){
+        this();
+        for(Card c : hand.cards){
+            add_card(c);
+        }
+    }
+
     /**
     Lists all the card in the hand
     */

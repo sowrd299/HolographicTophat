@@ -29,7 +29,7 @@ class JobMenu extends Menu {
             "Select a job to begin." :
                 ((player.will_complete_job()? 
                     ":JOB COMPLETE!:\nYou are ready for your next job." :
-                    "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Pogress on current job)"),
+                    "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Progress on current job)"),
             holo_color,
             null,
             font_size,

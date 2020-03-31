@@ -282,11 +282,18 @@ class LocalPlayer extends Player {
         return deck;
     }
 
+    void played_from_hand(Card c){
+        super.played_from_hand(c);
+        hand.remove_card(c);
+    }
+
     void draw_cards(int num){
         super.draw_cards(num);
         for(int i = 0; i < num; i++){
             Card c = deck.draw_card();
-            hand.add_card(c);
+            if(c != null){
+                hand.add_card(c);
+            }
         }
     }
     

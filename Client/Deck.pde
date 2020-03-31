@@ -37,9 +37,12 @@ class Deck {
     Returns the card and removes it from the deck
     */
     Card draw_card(){
-        Card r = cards.get(cards.size()-1);
-        cards.remove(cards.size()-1);
-        return r;
+        if(cards.size() > 0){
+            Card r = cards.get(cards.size()-1);
+            cards.remove(cards.size()-1);
+            return r;
+        }
+        return null;
     }
 
 }

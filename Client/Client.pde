@@ -14,7 +14,7 @@ String welcome_text = ":AEH 41.06.54:\nWelcome .Agent. to:\n\nVITIUM\n\n";
 StarFieldBG bg;
 color holo_color;
 Menu menu;
-Menu main_menu;
+MainMenu main_menu;
 MenuSwitcher switcher;
 
 // gameplay variables for players
@@ -332,6 +332,7 @@ void draw() {
             for(String id : players.keySet()){
               players.get(id).draw_cards(3);
             }
+            main_menu.start_turn();
             switch_to_jobs_menu();
           }
 

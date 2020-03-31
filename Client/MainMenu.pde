@@ -4,7 +4,8 @@ class MainMenu extends Menu {
 
     private PlayerUI local_player;
     private PlayerUI[] opponents;
-    private Hand hand;
+    private Hand player_hand; // the master copy of the hand
+    private Hand hand; // the working copy of the hand
     private ButtonHandler lockin_handler;
 
     private Button opponent_bg_button;
@@ -17,9 +18,21 @@ class MainMenu extends Menu {
         super(menu_switcher, holo_color);
         this.opponents = opponents;
         this.local_player = local_player;
-        this.hand = hand;
+        this.player_hand = hand;
+        refresh_hand();
         this.lockin_handler = lockin_handler;
         //margin = r.h/40;
+    }
+
+    private void refresh_hand(){
+        hand = new Hand(player_hand);
+    }
+
+    /**
+    To be called at the start of the turn
+    */
+    void start_turn(){
+        refresh_hand();
     }
 
     void init() {
