@@ -109,6 +109,23 @@ class Player{
         hand_size -= 1;
     }
 
+    // REGULAR UPKEEP
+
+    /**
+    To be called at the start of the game
+    */
+    void start_game(){
+        draw_cards(6);
+    }
+
+
+    /**
+    To be called at the end of every turn
+    */
+    void start_turn(){
+        draw_cards(3);
+    }
+
     // PLAYING MANEUVERS
 
     /**
@@ -280,6 +297,11 @@ class LocalPlayer extends Player {
 
     Deck get_deck(){
         return deck;
+    }
+
+    void start_game(){
+        deck.shuffle();
+        super.start_game();
     }
 
     void played_from_hand(Card c){
