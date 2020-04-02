@@ -4,9 +4,11 @@ A class for managing game-wide game logic
 class GameManager{
 
     Player[] players;
+    int turn_ind; // the index of the player whose turn it is
 
     GameManager(Player[] players){
         this.players = players;
+        turn_ind = 0;
     }
 
     /*
@@ -24,9 +26,20 @@ class GameManager{
     */
     void start_turn(){
         for(int i = 0; i < players.length; i++){
-            players[i].start_turn();
+            players[i].start_turn(i == turn_ind);
         }
+
+        // advance the turn player
+        turn_ind++;
+        turn_ind %= players.length;
     }
+
+    Player get_turn_player(){
+        return players[turn_ind];
+    }
+
+
+    // TODO: right now, this can actually be split into two classes at this point here
 
     /**
     Fails all cards plays in the given array that the player's can't afford

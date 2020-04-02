@@ -121,9 +121,12 @@ class Player{
 
     /**
     To be called at the end of every turn
+    Takes if the player is the active player on this turn that is starting
     */
-    void start_turn(){
-        draw_cards(3);
+    void start_turn(boolean active_this_turn){
+        if(active_this_turn){
+            draw_cards(3);
+        }
     }
 
     // PLAYING MANEUVERS

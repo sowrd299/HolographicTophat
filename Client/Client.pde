@@ -207,8 +207,12 @@ void setup_game(String local_id, String[] player_ids, int turn){
   setup_opponents(local_id, player_ids);
 
   // setup the gm
-  Player[] ps = new Player[0];
-  gm = new GameManager(players.values().toArray(ps));
+  // give players in order id's recieved, so turn order matches up
+  Player[] ps = new Player[player_ids.length];
+  for(int i = 0; i < player_ids.length; i++){
+    ps[i] = players.get(player_ids[i]);
+  }
+  gm = new GameManager(ps);
   
   // start the game
   gm.start_game();
