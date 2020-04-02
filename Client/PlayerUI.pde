@@ -88,3 +88,18 @@ class PlayerUIButton extends CompositButton{
     }
 
 }
+
+class LocalPlayerUI extends PlayerUI{
+
+    LocalPlayer local_player;
+
+    LocalPlayerUI(String id, LocalPlayer player){
+        super(id, player);
+        local_player = player;
+    }
+
+    LocalPlayer get_local_player(){
+        return local_player;
+    }
+
+}
