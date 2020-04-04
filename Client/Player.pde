@@ -51,11 +51,15 @@ Implements game logic
 */
 class Player{
 
+    static STARTING_CARDS = 6;
+    static CARDS_PER_TURN = 2;
+
     private int progress; // the player's current progress on their current job
     private int score; // the player's current score
     private int hand_size; // tracks the number of cards in this player's hand
 
     private Card boss; // the player's "boss" identity card
+    private HashMap<String, Integer> available_agents;
 
     private Card defense; // the card the player is currently playing as their defense
     private Card job; // the job the player is currently on
@@ -70,6 +74,7 @@ class Player{
         hand_size = 0;
         boss = new BossCard("Agent of the Houses"); // testing boss card
         active = true;
+        reset_agents();
         clear_defense();
     }
 
@@ -91,6 +96,10 @@ class Player{
 
     Card get_boss(){
         return boss;
+    }
+
+    HashMap<String, Integer> get_available_agents(){
+        return available_agents;
     }
 
     boolean is_active(){
@@ -122,7 +131,7 @@ class Player{
     To be called at the start of the game
     */
     void start_game(){
-        draw_cards(6);
+        draw_cards(STARTING_CARDS);
     }
 
 
@@ -132,7 +141,8 @@ class Player{
     */
     void start_turn(boolean active_this_turn){
         if(active_this_turn){
-            draw_cards(3);
+            draw_cards(CARDS_PER_TURN);
+            reset_agents();
         }
         active = active_this_turn;
     }
@@ -202,20 +212,40 @@ class Player{
     // MANAGING THE AGENT COST OF MANEUVERS
 
     /**
-    Returns if the given cards are a legal play, given the available agents
-    Takes all cards played by the player in a given round
+    Returns all the agents the player will ever have available
     */
-    // TODO: make this algorithm implementation more reusable
-    boolean are_legal_plays(Card[] played) {
+    HashMap<String, Integer> get_max_agents_available(){
 
         HashMap<String, Integer> available = new HashMap<String, Integer>(); // agent type : number still available
 
-        // get the agents available
         Stat boss_agents = boss.get_stat_object(STAT_AGENTS);
         available.put(AGENT_ALL_PURPOSE, 0); // ensure always have this fields
         for(String agent_type: boss_agents.get_stats()) {
             available.put(agent_type, boss_agents.get_stat(agent_type).get());
         }
+
+        return available;
+
+    }
+
+    void reset_agents(){
+        available_agents = get_max_agents_available();
+    }
+
+    /**
+    By default, will used stored agents available
+    */
+    boolean are_legal_plays(Card[] played){
+        return are_legal_plays(played, available_agents);
+    }
+
+    /**
+    Returns if the given cards are a legal play, given the available agents
+    Takes all cards played by the player in a given round
+    Take the remaining agents available; will mutate this map as those agents are assigned
+    */
+    // TODO: make this algorithm implementation more reusable
+    boolean are_legal_plays(Card[] played, HashMap<String, Integer> available ) {
 
         // use agents
         for(Card c : played) {

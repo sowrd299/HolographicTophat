@@ -90,9 +90,9 @@ class MainMenu extends Menu {
         );
 
         String agent_line = "|";
-        Stat agents = local_player.get_player().get_boss().get_stat_object(STAT_AGENTS);
-        for(String agent_type : agents.get_stats()){
-            agent_line += " " + agent_type + ": " + agents.get_stat(agent_type).get() + " |";
+        HashMap<String, Integer> agents = local_player.get_player().get_available_agents();
+        for(String agent_type : agents.keySet()){
+            agent_line += " " + agent_type + ": " + agents.get(agent_type) + " |";
         }
 
         local_bg_button = new BackgroundButton(
