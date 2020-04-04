@@ -39,7 +39,6 @@ LocalPlayerUI local_player;
 HashMap<String,Player> players; // the players, by ID
 
 // gameplay variables for cards
-Hand job_hand; // TODO: this should get rolled into player
 CardLoader cl;
 
 // gameplay variables for jobs
@@ -47,6 +46,7 @@ PlayPosition job_position; // TODO: maybe this should get rolled into local play
 
 // playtesting variables
 Deck test_deck;
+Hand test_job_hand; // TODO: this should get rolled into player
 
 
 
@@ -62,7 +62,12 @@ void setup(){
   con = new Connection();
 
   // setup the GUI
-  holo_color = color(240,60,60);
+  holo_color = new color[]{ // TODO: random color for testing
+    color(240,60,60), //haro
+    color(60,240,60), //grim
+    color(80,60,240), //avond
+    color(240,240,60), //calitus
+  }[int(random(4))];
   bg = new StarFieldBG();
   switcher = new MenuSwitcher();
 
@@ -71,11 +76,11 @@ void setup(){
   job_position = new PlayPosition();
 
   // testing job hand
-  job_hand = new Hand();
-  job_hand.add_card(cl.load_card("Patient Stalking"));
-  job_hand.add_card(cl.load_card("Club Infiltration"));
-  job_hand.add_card(cl.load_card("Rocketeering"));
-  job_hand.add_card(cl.load_card("Assassination in Nightlife"));
+  test_job_hand = new Hand();
+  test_job_hand.add_card(cl.load_card("Patient Stalking"));
+  test_job_hand.add_card(cl.load_card("Club Infiltration"));
+  test_job_hand.add_card(cl.load_card("Rocketeering"));
+  test_job_hand.add_card(cl.load_card("Assassination in Nightlife"));
 
   // testing deck
   test_deck = new Deck();
@@ -175,8 +180,8 @@ String player_name(String player_id){
 Initializes the local player
 And adds them to the list of players
 */
-void setup_local_player(String local_id, Deck deck){
-  LocalPlayer lp = new LocalPlayer(deck);
+void setup_local_player(String local_id, Deck deck, Hand job_hand){
+  LocalPlayer lp = new LocalPlayer(deck, job_hand);
   players.put(local_id, lp);
   local_player = new LocalPlayerUI(local_id, lp);
 }
@@ -207,7 +212,7 @@ void setup_game(String local_id, String[] player_ids, int turn){
 
   // setup the players
   players = new HashMap<String, Player>();
-  setup_local_player(local_id, test_deck);
+  setup_local_player(local_id, test_deck, test_job_hand);
   setup_opponents(local_id, player_ids);
 
   // setup the gm
@@ -242,12 +247,12 @@ void setup_game(String local_id, String[] player_ids, int turn){
   
   // create the jobs menu
   job_menu = new JobMenu(
-    job_hand,
+    local_player.get_local_player().get_job_hand(),
     local_player.get_player(),
     job_position,
     new ButtonHandler() { // when_done
       public void on_click(){
-        switcher.switch_menu(main_menu);
+        switcher.switch_menu(new AlertMenu(lockin_text, holo_color, null));
         gp_sender.send_job_message(true);
       }
     },
@@ -345,6 +350,7 @@ String play_job_cards(Message resp){
         }
         // actually play the new job
         players.get(id).play_job(card);
+        players.get(id).played_from_job_hand(card);
         alert += player_name(id) + " began the job " + players.get(id).get_job().get_id() + ".\n";
       }
     }
@@ -398,8 +404,9 @@ void play_cards(Message resp){
   // TODO: this can preserve a menu that shouldn't be preverved sometimes
   // TODO:      .... WHEN?
   // NOTE: This (weirdly) is where only getting a job menu on your turn is implemented
+  String alert = maneuver_alert + job_alert;
   switcher.switch_menu(new AlertMenu(
-    maneuver_alert + job_alert, 
+    (alert).equals("") ? "Nothing happened. All agents chose to remain passive." : alert, 
     holo_color,
     switcher.create_button_handler(next_menu)
   ));

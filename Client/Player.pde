@@ -1,58 +1,13 @@
 import java.util.HashMap;
 
-/**
-Represents the outcome of a player playing a card
-*/
-class CardPlayResault{
-
-    public int progress;
-    public int damage_to_def;
-    public int defense_stealth_used;
-    public int damage_to_player;
-
-    CardPlayResault(int progress, int damage_to_def, int defense_stealth_used, int damage_to_player){
-        this.progress = progress;
-        this.damage_to_def = damage_to_def;
-        this.defense_stealth_used = defense_stealth_used;
-        this.damage_to_player = damage_to_player;
-    }
-
-    CardPlayResault(){
-        this(0,0,0,0);
-    }
-
-    String toString(){
-        String r = "";
-
-        if(progress != 0){
-            r += " " + progress + " progress.";
-        }
-        if(damage_to_def != 0){
-            r += " " + damage_to_def + " damage dealt.";
-        }else if(defense_stealth_used != 0){
-            r += " " + defense_stealth_used + " damage avoided.";
-        }
-        if(damage_to_player != 0){
-            r += " " + damage_to_player + " damage dealt back.";
-        }
-
-        if(r.equals("")){
-            r = " no effect.";
-        }
-
-        return r;
-    }
-
-}
+int STARTING_CARDS = 6;
+int CARDS_PER_TURN = 2;
 
 /**
 A class to represent a player's current gamestate
 Implements game logic
 */
 class Player{
-
-    static STARTING_CARDS = 6;
-    static CARDS_PER_TURN = 2;
 
     private int progress; // the player's current progress on their current job
     private int score; // the player's current score
@@ -124,6 +79,12 @@ class Player{
     void played_from_hand(Card c){
         hand_size -= 1;
     }
+
+    /**
+    Manages when a card leaves the player's job hand
+    Takes the card played
+    */
+    void played_from_job_hand(Card c){ }
 
     // REGULAR UPKEEP
 
@@ -318,22 +279,31 @@ class Player{
 
 }
 
+
+
+
 /**
 Adds in code for handling hidden gamestates of that player
 */
 class LocalPlayer extends Player {
 
     private Hand hand;
+    private Hand job_hand;
     private Deck deck;
 
-    LocalPlayer(Deck deck){
+    LocalPlayer(Deck deck, Hand job_hand){
         super();
         hand = new Hand();
         this.deck = deck;
+        this.job_hand = job_hand;
     }
 
     Hand get_hand(){
         return hand;
+    }
+
+    Hand get_job_hand(){
+        return job_hand;
     }
 
     Deck get_deck(){
@@ -350,6 +320,11 @@ class LocalPlayer extends Player {
         hand.remove_card(c);
     }
 
+    void played_from_job_hand(Card c){
+        super.played_from_job_hand(c);
+        job_hand.remove_card(c);
+    }
+
     void draw_cards(int num){
         super.draw_cards(num);
         for(int i = 0; i < num; i++){
@@ -360,4 +335,51 @@ class LocalPlayer extends Player {
         }
     }
     
+}
+
+
+
+/**
+Represents the outcome of a player playing a card
+*/
+class CardPlayResault{
+
+    public int progress;
+    public int damage_to_def;
+    public int defense_stealth_used;
+    public int damage_to_player;
+
+    CardPlayResault(int progress, int damage_to_def, int defense_stealth_used, int damage_to_player){
+        this.progress = progress;
+        this.damage_to_def = damage_to_def;
+        this.defense_stealth_used = defense_stealth_used;
+        this.damage_to_player = damage_to_player;
+    }
+
+    CardPlayResault(){
+        this(0,0,0,0);
+    }
+
+    String toString(){
+        String r = "";
+
+        if(progress != 0){
+            r += " " + progress + " progress.";
+        }
+        if(damage_to_def != 0){
+            r += " " + damage_to_def + " damage dealt.";
+        }else if(defense_stealth_used != 0){
+            r += " " + defense_stealth_used + " damage avoided.";
+        }
+        if(damage_to_player != 0){
+            r += " " + damage_to_player + " damage dealt back.";
+        }
+
+        if(r.equals("")){
+            r = " no effect.";
+        }
+
+        return r;
+    }
+
 }

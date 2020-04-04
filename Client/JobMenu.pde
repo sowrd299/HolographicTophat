@@ -4,7 +4,6 @@ class JobMenu extends Menu {
 
     private Hand job_hand;
     private Player player;
-    private Card cont_job; // the job that can be continued
     private PlayPosition position;
     private ButtonHandler when_finished;
     private ButtonHandler when_do_nothing;
@@ -18,7 +17,6 @@ class JobMenu extends Menu {
         super(null, holo_color);
         this.job_hand = job_hand;
         this.player = player;
-        this.cont_job = player.get_job();
         this.position = position;
         this.when_finished = when_finished;
         this.when_do_nothing = when_do_nothing;
@@ -31,6 +29,8 @@ class JobMenu extends Menu {
     void init(){
 
         if(player.is_active()){ // TODO: assumes player will have a constant active state until next switch
+
+            Card cont_job = player.get_job();
 
             Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
             status_button = new BackgroundButton(
@@ -62,7 +62,7 @@ class JobMenu extends Menu {
             }
 
             rects[i] = rects[i].get_section(0,0,1,1.5);
-            continue_button = new ContinueButton(rects[i]);
+            continue_button = new ContinueButton(rects[i], cont_job);
 
             bg_button = new BackgroundButton(
                 create_bounding_rect(rects, margin/2, margin/2, margin/2 + font_size, margin/2),
@@ -115,7 +115,7 @@ class JobMenu extends Menu {
         private Button label_button;
         private Button card_button;
 
-        ContinueButton(Rect r){
+        ContinueButton(Rect r, Card cont_job){
             super(r, "", holo_color, cont_job != null ? when_finished : null);
             label_button = new TicketButton(
                 r.get_section(0.25,0,0.5,0.33),
