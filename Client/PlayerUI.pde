@@ -85,7 +85,7 @@ class PlayerUIButton extends CompositButton{
     protected MainButton main_button;
     protected CardButton job_button;
     protected CardButton played_against_button;
-    protected TicketButton inactive_button;
+    protected Button inactive_button;
     protected ScoreButton score_button;
 
     PlayerUIButton(PlayerUI opponent, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
@@ -96,12 +96,12 @@ class PlayerUIButton extends CompositButton{
         main_button = new MainButton(rect.get_section(0,0,0.4,0.25), c, null, stroke_weight, corner_size);
         job_button = new JobCardButton(opponent.get_player().get_job(), rect.get_section(0.45,0,0.55,0.25), c, null, stroke_weight, corner_size);
         played_against_button = new ManeuverCardButton(opponent.get_played_against().get(), rect.get_section(0,0.25,1,0.5), c, null, stroke_weight, corner_size);
-        inactive_button = new TicketButton(rect.get_section(0.1,0.35,0.8,0.3), opponent.get_id() + " (Inactive)", c, null, stroke_weight, corner_size);
+        inactive_button = new BackgroundButton(rect.get_section(0.05,0.45,0.9,0.3), opponent.get_id() + " (Inactive)", c, null, int(r.h*0.15), stroke_weight, corner_size, corner_size/2);
         score_button = new ScoreButton(rect.get_section(0.1,0.75,0.8,0.25), c, null, stroke_weight, corner_size);
     }
 
     Button[] get_buttons(){
-        return new Button[]{ score_button, job_button, opponent.get_player().get_active() ? played_against_button : inactive_button, main_button };
+        return new Button[]{ score_button, job_button, opponent.get_player().is_active() ? played_against_button : inactive_button, main_button };
     }
 
 }

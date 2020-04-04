@@ -93,7 +93,7 @@ class Player{
         return boss;
     }
 
-    boolean get_active(){
+    boolean is_active(){
         return active;
     }
 

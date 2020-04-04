@@ -64,7 +64,7 @@ class Match():
         con.send(Message( 
             type = "setup",
             you_are = player_id,
-            other_players = ",".join(c for c in self.player_ids if not c == player_id), # TODO: don't reference the global here
+            all_players = ",".join(c for c in self.player_ids),
             turn = "0" #str(self.get_turn()) # tell the client where to start the turn count
         ))
 

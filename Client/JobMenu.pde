@@ -30,7 +30,7 @@ class JobMenu extends Menu {
 
     void init(){
 
-        if(player.get_active()){ // TODO: assumes player will have a constant active state until next switch
+        if(player.is_active()){ // TODO: assumes player will have a constant active state until next switch
 
             Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
             status_button = new BackgroundButton(
@@ -80,7 +80,7 @@ class JobMenu extends Menu {
     }
 
     Button[] get_buttons(){
-        if(player.get_active()){
+        if(player.is_active()){
             Button[] r = new Button[job_buttons.length + 3];
             r[0] = bg_button;
             r[1] = continue_button;

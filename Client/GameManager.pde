@@ -3,8 +3,8 @@ A class for managing game-wide game logic
 */
 class GameManager{
 
-    Player[] players;
-    int turn_ind; // the index of the player whose turn it is
+    private Player[] players;
+    private int turn_ind; // the index of the player whose turn it is
 
     GameManager(Player[] players){
         this.players = players;

@@ -124,7 +124,7 @@ void draw() {
         // SETS UP THE GAME 
         case "setup":
           String local_id = resp.get("you_are");
-          String[] player_ids = resp.get("other_players").split(",",0);
+          String[] player_ids = resp.get("all_players").split(",",0);
           int turn = int(resp.get("turn"));
           setup_game(local_id, player_ids, turn);
 
@@ -186,14 +186,18 @@ Initializes all players who are not the local player
 and adds them the list of players
 */
 void setup_opponents(String local_id, String[] player_ids){
-  opponents = new PlayerUI[player_ids.length];
+  ArrayList<PlayerUI> new_opponents = new ArrayList<PlayerUI>();
+  
   for(int i = 0; i < player_ids.length; i++){
-    Player player = new Player();
-    players.put(player_ids[i], player);
-    if(player_ids[i] != local_id){
-      opponents[i] = new PlayerUI(player_ids[i], player);
+    if(!player_ids[i].equals(local_id)){
+      Player player = new Player();
+      players.put(player_ids[i], player);
+      new_opponents.add(new PlayerUI(player_ids[i], player));
     }
   }
+
+  this.opponents = new PlayerUI[0];
+  this.opponents = new_opponents.toArray(this.opponents);
 }
 
 /**
@@ -216,6 +220,7 @@ void setup_game(String local_id, String[] player_ids, int turn){
   
   // start the game
   gm.start_game();
+  print_active_players();
 
   // gameplay connection
   gp_sender = new GameplaySender(con, local_id, opponents, turn);
@@ -350,10 +355,22 @@ String play_job_cards(Message resp){
 }
 
 /**
+Printing all player's currently active
+*/
+void print_active_players(){
+  for(String id : players.keySet()){ // TODO: currently doing all options for testing
+    if(players.get(id).is_active()){
+      print("Starting "+id+"'s turn!\n");
+    }
+  }
+}
+
+/**
 Handles the start of each turn
 */
 void start_turn(){
   gm.start_turn();
+  print_active_players();
   main_menu.start_turn();
 }
 
