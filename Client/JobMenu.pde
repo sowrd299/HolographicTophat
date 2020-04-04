@@ -1,79 +1,97 @@
 class JobMenu extends Menu {
+    
+    private Menu inactive_menu; // the menu to be shown instead while the player is inactive
 
     private Hand job_hand;
     private Player player;
     private Card cont_job; // the job that can be continued
     private PlayPosition position;
     private ButtonHandler when_finished;
+    private ButtonHandler when_do_nothing;
 
     private Button status_button;
     private Button bg_button;
     private Button[] job_buttons;
     private Button continue_button;
 
-    JobMenu(Hand job_hand, Player player, PlayPosition position, ButtonHandler when_finished, color holo_color){
+    JobMenu(Hand job_hand, Player player, PlayPosition position, ButtonHandler when_finished, ButtonHandler when_do_nothing, color holo_color){
         super(null, holo_color);
         this.job_hand = job_hand;
         this.player = player;
         this.cont_job = player.get_job();
         this.position = position;
         this.when_finished = when_finished;
+        this.when_do_nothing = when_do_nothing;
+        this.inactive_menu = new AlertMenu("Anticipating an enemy to begin a job soon. Oppertunity to interupt is eminant. Remain alert.", holo_color, null);
+
+        this.inactive_menu.init(); // because it's static, just do it the once
+        // TODO: have a better system for the inactive menu
     }
 
     void init(){
 
-        Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
-        status_button = new BackgroundButton(
-            status_rect,
-            cont_job == null ?
-            "Select a job to begin." :
-                ((player.will_complete_job()? 
-                    ":JOB COMPLETE!:\nYou are ready for your next job." :
-                    "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Progress on current job)"),
-            holo_color,
-            null,
-            font_size,
-            margin/10, margin, margin/2
-        );
+        if(player.get_active()){ // TODO: assumes player will have a constant active state until next switch
 
-        Card[] cards = job_hand.get_cards();
-        Rect[] rects = create_rects(r.x+margin, status_rect.y+status_rect.h+margin+font_size, r.w-2*margin, r.h/12, 0, margin/2, cards.length+1, 1);
-        int i = 0;
-
-        job_buttons = new Button[cards.length];
-        for(; i < job_buttons.length; i++){
-            job_buttons[i] = new JobCardButton(
-                cards[i],
-                rects[i],
+            Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
+            status_button = new BackgroundButton(
+                status_rect,
+                cont_job == null ?
+                "Select a job to begin." :
+                    ((player.will_complete_job()? 
+                        ":JOB COMPLETE!:\nYou are ready for your next job." :
+                        "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Progress on current job)"),
                 holo_color,
-                new JobButtonHandler(cards[i]),
-                margin/10, 2*margin/3
+                null,
+                font_size,
+                margin/10, margin, margin/2
             );
+
+            Card[] cards = job_hand.get_cards();
+            Rect[] rects = create_rects(r.x+margin, status_rect.y+status_rect.h+margin+font_size, r.w-2*margin, r.h/12, 0, margin/2, cards.length+1, 1);
+            int i = 0;
+
+            job_buttons = new Button[cards.length];
+            for(; i < job_buttons.length; i++){
+                job_buttons[i] = new JobCardButton(
+                    cards[i],
+                    rects[i],
+                    holo_color,
+                    new JobButtonHandler(cards[i]),
+                    margin/10, 2*margin/3
+                );
+            }
+
+            rects[i] = rects[i].get_section(0,0,1,1.5);
+            continue_button = new ContinueButton(rects[i]);
+
+            bg_button = new BackgroundButton(
+                create_bounding_rect(rects, margin/2, margin/2, margin/2 + font_size, margin/2),
+                "Select your next job:",
+                holo_color,
+                null,
+                font_size,
+                margin/10, margin, margin/2
+            );
+
+        }else{
+            when_do_nothing.on_click();
         }
-
-        rects[i] = rects[i].get_section(0,0,1,1.5);
-        continue_button = new ContinueButton(rects[i]);
-
-        bg_button = new BackgroundButton(
-            create_bounding_rect(rects, margin/2, margin/2, margin/2 + font_size, margin/2),
-            "Select your next job:",
-            holo_color,
-            null,
-            font_size,
-            margin/10, margin, margin/2
-        );
 
     }
 
     Button[] get_buttons(){
-        Button[] r = new Button[job_buttons.length + 3];
-        r[0] = bg_button;
-        r[1] = continue_button;
-        r[2] = status_button;
-        for(int i = 0; i < job_buttons.length; i++){
-            r[i+3] = job_buttons[i];
+        if(player.get_active()){
+            Button[] r = new Button[job_buttons.length + 3];
+            r[0] = bg_button;
+            r[1] = continue_button;
+            r[2] = status_button;
+            for(int i = 0; i < job_buttons.length; i++){
+                r[i+3] = job_buttons[i];
+            }
+            return r;
+        }else{
+            return inactive_menu.get_buttons();
         }
-        return r;
     }
 
     class JobButtonHandler implements ButtonHandler{

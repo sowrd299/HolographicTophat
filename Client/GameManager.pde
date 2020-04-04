@@ -19,19 +19,22 @@ class GameManager{
         for(int i = 0; i < players.length; i++){
             players[i].start_game();
         }
+
+        start_turn();
     }
 
     /**
     Handles gamelogic for the start of each turn
     */
     void start_turn(){
-        for(int i = 0; i < players.length; i++){
-            players[i].start_turn(i == turn_ind);
-        }
 
         // advance the turn player
         turn_ind++;
         turn_ind %= players.length;
+
+        for(int i = 0; i < players.length; i++){
+            players[i].start_turn(i == turn_ind);
+        }
     }
 
     Player get_turn_player(){

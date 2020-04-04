@@ -70,6 +70,14 @@ class GameplaySender implements ButtonHandler{
   }
 
   /**
+  Sends a blank message to the server
+  Serves only to lock in and increment the turn
+  */
+  boolean send_basic_message(boolean lockin){
+    return con.send(populate_basic_message(new Message("card_play"), lockin));
+  }
+
+  /**
   Allows this to be used a a button handler
   */
   void on_click(){

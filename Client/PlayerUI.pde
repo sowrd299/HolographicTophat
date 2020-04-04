@@ -28,6 +28,21 @@ class PlayerUI{
   
 }
 
+class LocalPlayerUI extends PlayerUI{
+
+    LocalPlayer local_player;
+
+    LocalPlayerUI(String id, LocalPlayer player){
+        super(id, player);
+        local_player = player;
+    }
+
+    LocalPlayer get_local_player(){
+        return local_player;
+    }
+
+}
+
 /**
 A class to render the player as a button
 */
@@ -70,6 +85,7 @@ class PlayerUIButton extends CompositButton{
     protected MainButton main_button;
     protected CardButton job_button;
     protected CardButton played_against_button;
+    protected TicketButton inactive_button;
     protected ScoreButton score_button;
 
     PlayerUIButton(PlayerUI opponent, Rect rect, color c, ButtonHandler handler, int stroke_weight, int corner_size){
@@ -79,27 +95,13 @@ class PlayerUIButton extends CompositButton{
         // set up the buttons
         main_button = new MainButton(rect.get_section(0,0,0.4,0.25), c, null, stroke_weight, corner_size);
         job_button = new JobCardButton(opponent.get_player().get_job(), rect.get_section(0.45,0,0.55,0.25), c, null, stroke_weight, corner_size);
-        played_against_button =new ManeuverCardButton(opponent.get_played_against().get(), rect.get_section(0,0.25,1,0.5), c, null, stroke_weight, corner_size);
+        played_against_button = new ManeuverCardButton(opponent.get_played_against().get(), rect.get_section(0,0.25,1,0.5), c, null, stroke_weight, corner_size);
+        inactive_button = new TicketButton(rect.get_section(0.1,0.35,0.8,0.3), opponent.get_id() + " (Inactive)", c, null, stroke_weight, corner_size);
         score_button = new ScoreButton(rect.get_section(0.1,0.75,0.8,0.25), c, null, stroke_weight, corner_size);
     }
 
     Button[] get_buttons(){
-        return new Button[]{ score_button, job_button, played_against_button, main_button };
-    }
-
-}
-
-class LocalPlayerUI extends PlayerUI{
-
-    LocalPlayer local_player;
-
-    LocalPlayerUI(String id, LocalPlayer player){
-        super(id, player);
-        local_player = player;
-    }
-
-    LocalPlayer get_local_player(){
-        return local_player;
+        return new Button[]{ score_button, job_button, opponent.get_player().get_active() ? played_against_button : inactive_button, main_button };
     }
 
 }

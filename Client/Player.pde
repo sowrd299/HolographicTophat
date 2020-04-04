@@ -62,11 +62,14 @@ class Player{
 
     private int defense_stealth; // the amount of stealth the player has left on their current defense card
 
+    private boolean active; // if the player is "active" this turn
+
     Player(){
         progress = 0;
         score = 0;
         hand_size = 0;
         boss = new BossCard("Agent of the Houses"); // testing boss card
+        active = true;
         clear_defense();
     }
 
@@ -88,6 +91,10 @@ class Player{
 
     Card get_boss(){
         return boss;
+    }
+
+    boolean get_active(){
+        return active;
     }
 
 
@@ -127,6 +134,7 @@ class Player{
         if(active_this_turn){
             draw_cards(3);
         }
+        active = active_this_turn;
     }
 
     // PLAYING MANEUVERS

@@ -142,7 +142,7 @@ void draw() {
         
       }
 
-}
+    }
 
   }else{ // if !con.is_connected();
 
@@ -240,10 +240,15 @@ void setup_game(String local_id, String[] player_ids, int turn){
     job_hand,
     local_player.get_player(),
     job_position,
-    new ButtonHandler() {
+    new ButtonHandler() { // when_done
       public void on_click(){
         switcher.switch_menu(main_menu);
         gp_sender.send_job_message(true);
+      }
+    },
+    new ButtonHandler() { // when_do_nothing
+      public void on_click(){
+        gp_sender.send_basic_message(true);
       }
     },
     holo_color
@@ -363,19 +368,24 @@ void play_cards(Message resp){
   String job_alert = play_job_cards(resp);
 
   // leave any current menu
-  switcher.switch_menu(main_menu);
+  Menu next_menu = main_menu;
 
   // Hand the start of a new round
   // TODO: this "if" is SO hacky; it will be better once we have any conception of UI vs. Message parsing vs. Gameplay handling
   if(job_alert.equals("")){
     start_turn();
-    switcher.switch_menu(job_menu);
+    next_menu = job_menu;
   }
 
   // alert the user to what happened
   // TODO: this can preserve a menu that shouldn't be preverved sometimes
   // TODO:      .... WHEN?
-  switcher.switch_menu(new AlertMenu(maneuver_alert + job_alert, holo_color, switcher.create_return_handler()));
+  // NOTE: This (weirdly) is where only getting a job menu on your turn is implemented
+  switcher.switch_menu(new AlertMenu(
+    maneuver_alert + job_alert, 
+    holo_color,
+    switcher.create_button_handler(next_menu)
+  ));
 
 }
 
