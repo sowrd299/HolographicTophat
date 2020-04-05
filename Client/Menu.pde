@@ -84,7 +84,11 @@ class Menu extends CompositButton {
     */
     Button[] get_buttons(){
         Button[] b = new Button[0];
-        return buttons.toArray(b);
+        if(buttons != null){
+            return buttons.toArray(b);
+        }else{
+            return b;
+        }
     }
 
     /**

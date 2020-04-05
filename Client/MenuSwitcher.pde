@@ -8,10 +8,30 @@ class MenuSwitcher extends Menu{
 
     Menu menu;
 
-    MenuSwitcher(){}
+    Rect exit_to;
+    Rect enter_from;
 
-    void switch_menu(Menu m) {
+    MenuSwitcher(){
+        super();
+        Rect sr = get_screen_rect();
+        exit_to = new Rect(sr.x - sr.w, sr.y, sr.w, sr.h);
+        enter_from = new Rect(sr.x, sr.y + sr.h, sr.w, sr.h);
+    }
+
+    void switch_menu(Menu m){
+        if(m == menu){
+            return;
+        }else if(menu != null){
+            println("Switching to: "+m.toString());
+            menu = new TransitionMenu(menu, m, exit_to, enter_from, 20, this);
+        }else{
+            switch_menu_notransition(m);
+        }
+    }
+
+    void switch_menu_notransition(Menu m) {
         //System.out.println("Switching menu...");
+        println("Switching to: "+m.toString());
         menu = m;
         menu.init();
         //System.out.println("...switched!");
@@ -23,6 +43,10 @@ class MenuSwitcher extends Menu{
 
     Button[] get_buttons(){
         return menu.get_buttons();
+    }
+
+    void draw(){
+        menu.draw();
     }
 
     /**

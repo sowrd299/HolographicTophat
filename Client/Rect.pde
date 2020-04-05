@@ -12,6 +12,10 @@ class Rect{
         this.h = h;
     }
 
+    String toString(){
+        return "{pos: ("+x+","+y+"), size: ("+w+","+h+")}";
+    }
+
     /**
     Returns if the rect includes a given region of the screen
      */
@@ -31,6 +35,19 @@ class Rect{
             y + (int)(rel_y * (float)h),
             (int)(rel_w * (float)w),
             (int)(rel_h * (float)h)
+        );
+    }
+
+    /**
+    Returns an interpolation between this rect and the given rect
+    Step should be between 1 and zero
+    */
+    Rect interpolate(Rect f, float step){
+        return new Rect(
+            interpolate_int(x, f.x, step),
+            interpolate_int(y, f.y, step),
+            interpolate_int(w, f.w, step),
+            interpolate_int(h, f.h, step)
         );
     }
 
@@ -87,7 +104,18 @@ Rect create_bounding_rect(Rect[] rects, int left_padding, int right_padding, int
 
 /**
 the rect that represents the entire screen
+is a function, so that can be manipulated independently
+NOTE: this must be called durring runtime; durring construction time, width and height are wrong;
 */
 Rect get_screen_rect(){
     return new Rect(0,0,width,height);
+}
+
+
+/**
+Returns a given interpolation between i and f
+Step should be between 1 and 0
+*/
+int interpolate_int(int i, int f, float step){
+    return int( i + ((f - i) * step) );
 }

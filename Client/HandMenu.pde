@@ -12,12 +12,6 @@ class HandMenu extends Menu{
     Hand hand; // the hand to be displayed
     ButtonHandler when_finished; // what to do after a card has been selected
 
-    // display variables
-    int x, y;
-    int button_w;
-    int button_h;
-    int y_padding;
-
     // menu items
     Button bg_button;
     Button[] card_buttons;
@@ -29,15 +23,22 @@ class HandMenu extends Menu{
         this.hand = hand;
         this.position = position;
         this.when_finished = when_finished;
-        x = r.x + margin;
-        y = r.y + margin;
-        button_w = r.w - 2*margin;
-        button_h = r.h/12;
-        y_padding = margin/3;
     }
 
 
     void init(){
+
+        // display variables
+        int x, y;
+        int button_w;
+        int button_h;
+        int y_padding;
+        x = r.x + margin;
+        y = r.y + margin;
+
+        button_w = r.w - 2*margin;
+        button_h = r.h/12;
+        y_padding = margin/3;
 
         boolean keep_option = position.get() != null; // if there is a card to have the option to keep
 

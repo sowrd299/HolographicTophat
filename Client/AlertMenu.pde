@@ -27,7 +27,7 @@ class AlertMenu extends Menu{
         int tab_w = (int)(r.w * 0.075);
         int text_h = (int)(r.h * 0.3);
 
-        Rect area = new Rect(margin + tab_w, r.h/4, r.w-tab_w-2*margin, r.h/2);
+        Rect area = new Rect(r.x + margin + tab_w, r.y + r.h/4, r.w-tab_w-2*margin, r.h/2);
 
         bg = new BackgroundButton(area, text, holo_color, null, r.h/36, margin/3, 8*margin, 2*margin);
 
@@ -35,7 +35,7 @@ class AlertMenu extends Menu{
         ArrayList<String> lines = bg.to_lines(text);
         int lines_per_page = text_h/bg.get_font_size();
         int num_pages = 1+lines.size()/lines_per_page; // TODO: this page estimate fails when lines_per_page is a factor of lines
-        Rect[] tab_rects = create_rects(margin,r.h/4+margin,tab_w,tab_w,-margin/2,-margin/2,num_pages,1);
+        Rect[] tab_rects = create_rects(r.x + margin, r.y + r.h/4+margin,tab_w,tab_w,-margin/2,-margin/2,num_pages,1);
         tab_buttons = new Button[num_pages]; 
 
         //System.out.println("Setting up allert pages: Lines: " + lines + "; Lines per page: "+lines_per_page+"; Num pages: "+num_pages);

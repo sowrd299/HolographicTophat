@@ -42,7 +42,7 @@ class MainMenu extends Menu {
 
         // setup the opponent buttons
         play_buttons = new Button[opponents.length];
-        Rect[] rects = create_rects(margin,margin+font_size,player_button_w,player_button_h,margin,margin,opponents.length,1);
+        Rect[] rects = create_rects(r.x + margin, r.y + margin+font_size,player_button_w,player_button_h,margin,margin,opponents.length,1);
         
         for(int i = 0; i < play_buttons.length; i++){
             // the menu for playing a card against that opponent
@@ -75,7 +75,7 @@ class MainMenu extends Menu {
 
         int send_button_h = r.h/13;
 
-        Rect local_r = new Rect(margin, r.h-send_button_h-2*margin-player_button_h, player_button_w, player_button_h);
+        Rect local_r = new Rect(r.x + margin, r.y + r.h-send_button_h-2*margin-player_button_h, player_button_w, player_button_h);
         local_player_button = new PlayerUIButton(
             local_player,
             local_r,
@@ -106,7 +106,7 @@ class MainMenu extends Menu {
 
 
         // setup the lock-in buttons
-        send_button = new TicketButton(new Rect(margin,r.h-margin-r.h/13,r.w-2*margin,send_button_h), "Lock-in Actions", holo_color, lockin_handler, margin/10, 2*margin/3);
+        send_button = new TicketButton(new Rect(r.x + margin, r.y + r.h-margin-r.h/13,r.w-2*margin,send_button_h), "Lock-in Actions", holo_color, lockin_handler, margin/10, 2*margin/3);
 
     }
 

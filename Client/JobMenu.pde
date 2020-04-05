@@ -7,6 +7,7 @@ class JobMenu extends Menu {
     private PlayPosition position;
     private ButtonHandler when_finished;
     private ButtonHandler when_do_nothing;
+    private boolean sent_when_do_nothing; // TODO: Have a more robust system for only doing this once
 
     private Button status_button;
     private Button bg_button;
@@ -20,10 +21,17 @@ class JobMenu extends Menu {
         this.position = position;
         this.when_finished = when_finished;
         this.when_do_nothing = when_do_nothing;
+        this.sent_when_do_nothing = false;
+
         this.inactive_menu = new AlertMenu("Anticipating an enemy to begin a job soon. Oppertunity to interupt is eminant. Remain alert.", holo_color, null);
 
         this.inactive_menu.init(); // because it's static, just do it the once
         // TODO: have a better system for the inactive menu
+    }
+
+    void set_rect(Rect r){
+        super.set_rect(r);
+        this.inactive_menu.set_rect(r); // TODO: find a less hacky way to keep this menu updated
     }
 
     void init(){
@@ -74,7 +82,10 @@ class JobMenu extends Menu {
             );
 
         }else{
-            when_do_nothing.on_click();
+            if(!sent_when_do_nothing){
+                when_do_nothing.on_click();
+                sent_when_do_nothing = true;
+            }
         }
 
     }

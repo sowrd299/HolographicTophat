@@ -21,6 +21,9 @@ String not_connected_text = welcome_text+"Connecting to insterstellar coms relay
 String waiting_text = welcome_text+"Relay located. Link secured.\nAwaiting handshake from foreign parties...";
 String connected_text = welcome_text+"Relay located. Link secured. Foreign parties identified. Comsnet established. The game is afoot .Agent.. Best of luck.";
 String lockin_text = "Options locked in. Anticipating enemy countermeasures.";
+String nothing_happened_text = "Nothing happened. All agents chose to remain passive.";
+
+Menu connecting_menu;
 
 // graphics and UI variables
 StarFieldBG bg;
@@ -67,9 +70,12 @@ void setup(){
     color(60,240,60), //grim
     color(80,60,240), //avond
     color(240,240,60), //calitus
+    color(60,120,180) //malitus
   }[int(random(4))];
   bg = new StarFieldBG();
   switcher = new MenuSwitcher();
+
+  connecting_menu = new AlertMenu(not_connected_text, holo_color, null);
 
   // setup gameplay
   cl = new CardLoader();
@@ -151,7 +157,7 @@ void draw() {
 
   }else{ // if !con.is_connected();
 
-    switcher.switch_menu(new AlertMenu(not_connected_text, holo_color, null));
+    switcher.switch_menu(connecting_menu);
     con.connect(server_ip);
 
   }
@@ -406,7 +412,7 @@ void play_cards(Message resp){
   // NOTE: This (weirdly) is where only getting a job menu on your turn is implemented
   String alert = maneuver_alert + job_alert;
   switcher.switch_menu(new AlertMenu(
-    (alert).equals("") ? "Nothing happened. All agents chose to remain passive." : alert, 
+    (alert).equals("") ? nothing_happened_text : alert, 
     holo_color,
     switcher.create_button_handler(next_menu)
   ));

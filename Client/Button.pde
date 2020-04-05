@@ -83,6 +83,14 @@ class Button {
         this(rect, label, null, c, handler);
     }
 
+    Rect get_rect(){
+        return r;
+    }
+
+    void set_rect(Rect r){
+        this.r = r;
+    }
+
     int get_font_size(){
         return font_size;
     }
