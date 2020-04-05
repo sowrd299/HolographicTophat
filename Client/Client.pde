@@ -90,13 +90,16 @@ void setup(){
 
   // testing deck
   test_deck = new Deck();
-  test_deck.add_card(cl.load_card("Do as Mantis"),2);
   test_deck.add_card(cl.load_card("Relay Access"),2);
+  test_deck.add_card(cl.load_card("Tampering Ghast"),2);
+  test_deck.add_card(cl.load_card("Raw Muscle"),3);
   test_deck.add_card(cl.load_card("The Arcus 2's Aid"),3);
+  test_deck.add_card(cl.load_card("Dreadfleat's Aid"),1);
   test_deck.add_card(cl.load_card("Supressive Fire"),2);
   test_deck.add_card(cl.load_card("Heavy Fire"),2);
   test_deck.add_card(cl.load_card("Turret Fire"),2);
-  test_deck.add_card(cl.load_card("Boarding"),2);
+  test_deck.add_card(cl.load_card("Embargo"),3);
+  test_deck.add_card(cl.load_card("Boarding"),3);
   test_deck.add_card(cl.load_card("Alert DJNF"),1);
 
 }

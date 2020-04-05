@@ -199,17 +199,24 @@ class CardLoader {
         
         // testing maneuvers
         register(new ManeuverCard("Do as Mantis",           3,0,0, "Seducer",2));
+
         register(new ManeuverCard("Relay Access",           0,0,3, "Hacker",2));
-        register(new ManeuverCard("Dogfight",               0,2,0, "Sailor",2));
-        register(new ManeuverCard("The Arcus 2's Aid",      2,1,0, "Sailor",2));
+        register(new ManeuverCard("Tampering Ghast",        2,0,1, "Hacker",2));
+
         register(new ManeuverCard("Heavy Fire",             0,3,0, "Sailor",3));
+        register(new ManeuverCard("Dogfight",               0,2,0, "Sailor",2));
         register(new ManeuverCard("Turret Fire",            0,1,0, "Sailor",1));
+        register(new ManeuverCard("Dreadfleat's Aid",       4,2,0, "Sailor",4));
+        register(new ManeuverCard("The Arcus 2's Aid",      2,1,0, "Sailor",2));
+        register(new ManeuverCard("Embargo",                4,0,0, "Sailor",3)); // slightly under powered
         register(new ManeuverCard("Boarding",               2,0,0, "Sailor",1));
-        register(new ManeuverCard("Supressive Fire",        0,0,3, "Sailor",2));
+        register(new ManeuverCard("Supressive Fire",        0,1,2, "Sailor",2));
+
+        register(new ManeuverCard("Raw Muscle",             3,0,0, "Goon",2));
         register(new ManeuverCard("Alert DJNF",             1,1,0, "Goon",0));
 
         // testing jobs
-        register(new JobCard("Patient Stalking",            3,5,5));
+        register(new JobCard("Patient Stalking",            3,6,5));
         register(new JobCard("Rocketeering",                5,4,7));
         register(new JobCard("Club Infiltration",           4,4,9));
         register(new JobCard("Assassination in Nightlife",  2,2,12));
