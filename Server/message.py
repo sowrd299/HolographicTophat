@@ -15,7 +15,9 @@ class Message():
     '''
     def __init__(self, **kwargs):
 
-        self.data = kwargs
+        self.data = dict()
+        for k,v in kwargs.items():
+            self.data[k] = str(v)
 
     def to_bytes(self, encoding="utf-8"):
 

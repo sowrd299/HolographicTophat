@@ -137,6 +137,9 @@ void draw() {
 
         // SETS UP THE GAME 
         case "setup":
+
+          randomSeed(int(resp.get("rand_seed")));
+
           String local_id = resp.get("you_are");
           String[] player_ids = resp.get("all_players").split(",",0);
           int turn = int(resp.get("turn"));

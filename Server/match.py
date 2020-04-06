@@ -1,4 +1,7 @@
+import random
+
 from message import Message
+from collections import defaultdict
 
 '''
 a class to represent an ongoing session of gameplay
@@ -17,6 +20,7 @@ class Match():
         # OUTGOING MESSAGES
         self.collected_args = dict() # gameplay data collected from clients to be redistributed
         self.turn = 0 # the current turn
+        self.seed_manager = SeedManager() # manages giving players random seeds
         self.old_messages = list() # useful for doing rewinds
 
     '''
@@ -65,7 +69,8 @@ class Match():
             type = "setup",
             you_are = player_id,
             all_players = ",".join(c for c in self.player_ids),
-            turn = "0" #str(self.get_turn()) # tell the client where to start the turn count
+            rand_seed = self.seed_manager[player_id],
+            turn = 0 #str(self.get_turn()) # tell the client where to start the turn count
         ))
 
     '''
@@ -132,3 +137,14 @@ class Match():
             print("Client {0} disconnected cleanly!".format(player_id))
         finally:
             self.connected_clients.remove(con)
+
+
+'''
+A 'class' for assigning random seeds to players
+'''
+class SeedManager(defaultdict):
+
+    MAX_SEED = 2**15
+
+    def __init__(self):
+        super().__init__( (lambda : random.randrange(self.MAX_SEED)) )
