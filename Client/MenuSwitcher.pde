@@ -14,8 +14,8 @@ class MenuSwitcher extends Menu{
     MenuSwitcher(){
         super();
         Rect sr = get_screen_rect();
-        exit_to = new Rect(sr.x - sr.w, sr.y, sr.w, sr.h);
-        enter_from = new Rect(sr.x, sr.y + sr.h, sr.w, sr.h);
+        exit_to = new Rect(sr.get_x() - sr.get_w(), sr.get_y(), sr.get_w(), sr.get_h());
+        enter_from = new Rect(sr.get_x(), sr.get_y() + sr.get_h(), sr.get_w(), sr.get_h());
     }
 
     void switch_menu(Menu m){

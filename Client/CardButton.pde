@@ -83,7 +83,7 @@ class CardButton extends CompositButton {
             Rect[] left_rects = create_rects(base_left_rect, margin, margin, 1, left_stat_names.length);
 
             Rect base_right_rect = rect.get_section(0.85, 0.05, 0.1, 0.7);
-            Rect[] right_rects = create_rects(base_right_rect, 2*(-base_right_rect.w), margin, 1, right_stat_names.length);
+            Rect[] right_rects = create_rects(base_right_rect, 2*(-base_right_rect.get_w()), margin, 1, right_stat_names.length);
 
             stat_buttons = new StatButton[left_rects.length + right_rects.length];
 
@@ -99,7 +99,7 @@ class CardButton extends CompositButton {
             Rect inner_left_rect = left_rects.length > 0 ? left_rects[left_rects.length-1] : r.get_section(0.1,0.1,0,0.8);
             Rect inner_right_rect = right_rects.length > 0 ? right_rects[right_rects.length-1] : r.get_section(0.9,0.1,0,0.8);
             title_button = new TitleButton(
-                new Rect( inner_left_rect.x + inner_left_rect.w,  inner_left_rect.y, inner_right_rect.x - inner_left_rect.x - inner_left_rect.w, r.h/3),
+                new Rect( inner_left_rect.get_x() + inner_left_rect.get_w(),  inner_left_rect.get_y(), inner_right_rect.get_x() - inner_left_rect.get_x() - inner_left_rect.get_w(), r.get_h()/3),
                 c
             );
 

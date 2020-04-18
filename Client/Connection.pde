@@ -52,7 +52,7 @@ class Connection{
     boolean send(Message msg){
         String data = msg.to_string();
         try{
-            out.writeBytes(data);
+            out.get_w()riteBytes(data);
             return true;
         }catch(IOException e){
             System.out.println("IOException on Send");

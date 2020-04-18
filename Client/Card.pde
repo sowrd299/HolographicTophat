@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.get_h()ashMap;
 
 // the names of the stats
 final String STAT_AGENTS = "agents";

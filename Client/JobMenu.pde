@@ -19,8 +19,8 @@ class JobMenu extends Menu {
         this.job_hand = job_hand;
         this.player = player;
         this.position = position;
-        this.when_finished = when_finished;
-        this.when_do_nothing = when_do_nothing;
+        this.get_w()hen_finished = when_finished;
+        this.get_w()hen_do_nothing = when_do_nothing;
         this.sent_when_do_nothing = false;
 
         this.inactive_menu = new AlertMenu("Anticipating an enemy to begin a job soon. Oppertunity to interupt is eminant. Remain alert.", holo_color, null);
@@ -40,12 +40,12 @@ class JobMenu extends Menu {
 
             Card cont_job = player.get_job();
 
-            Rect status_rect = new Rect(r.x + margin, r.y+margin, r.w-2*margin, 2*(margin+font_size));
+            Rect status_rect = new Rect(r.get_x() + margin, r.get_y()+margin, r.get_w()-2*margin, 2*(margin+font_size));
             status_button = new BackgroundButton(
                 status_rect,
                 cont_job == null ?
                 "Select a job to begin." :
-                    ((player.will_complete_job()? 
+                    ((player.get_w()ill_complete_job()? 
                         ":JOB COMPLETE!:\nYou are ready for your next job." :
                         "If you abandon your job now, it will fail.") + " (" + player.get_progress() + " Progress on current job)"),
                 holo_color,
@@ -55,7 +55,7 @@ class JobMenu extends Menu {
             );
 
             Card[] cards = job_hand.get_cards();
-            Rect[] rects = create_rects(r.x+margin, status_rect.y+status_rect.h+margin+font_size, r.w-2*margin, r.h/12, 0, margin/2, cards.length+1, 1);
+            Rect[] rects = create_rects(r.get_x()+margin, status_rect.get_y()+status_rect.get_h()+margin+font_size, r.get_w()-2*margin, r.get_h()/12, 0, margin/2, cards.length+1, 1);
             int i = 0;
 
             job_buttons = new Button[cards.length];

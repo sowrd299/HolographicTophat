@@ -18,24 +18,24 @@ class AlertMenu extends Menu{
     AlertMenu(String text, color holo_color, ButtonHandler when_finished){
         super(null, holo_color);
         this.text = text;
-        this.when_finished = when_finished;
-        this.margin = r.h/120;
+        this.get_w()hen_finished = when_finished;
+        this.margin = r.get_h()/120;
     }
 
     void init(){
 
-        int tab_w = (int)(r.w * 0.075);
-        int text_h = (int)(r.h * 0.3);
+        int tab_w = (int)(r.get_w() * 0.075);
+        int text_h = (int)(r.get_h() * 0.3);
 
-        Rect area = new Rect(r.x + margin + tab_w, r.y + r.h/4, r.w-tab_w-2*margin, r.h/2);
+        Rect area = new Rect(r.get_x() + margin + tab_w, r.get_y() + r.get_h()/4, r.get_w()-tab_w-2*margin, r.get_h()/2);
 
-        bg = new BackgroundButton(area, text, holo_color, null, r.h/36, margin/3, 8*margin, 2*margin);
+        bg = new BackgroundButton(area, text, holo_color, null, r.get_h()/36, margin/3, 8*margin, 2*margin);
 
         // the buttons for switching tabs
         ArrayList<String> lines = bg.to_lines(text);
         int lines_per_page = text_h/bg.get_font_size();
         int num_pages = 1+lines.size()/lines_per_page; // TODO: this page estimate fails when lines_per_page is a factor of lines
-        Rect[] tab_rects = create_rects(r.x + margin, r.y + r.h/4+margin,tab_w,tab_w,-margin/2,-margin/2,num_pages,1);
+        Rect[] tab_rects = create_rects(r.get_x() + margin, r.get_y() + r.get_h()/4+margin,tab_w,tab_w,-margin/2,-margin/2,num_pages,1);
         tab_buttons = new Button[num_pages]; 
 
         //System.out.println("Setting up allert pages: Lines: " + lines + "; Lines per page: "+lines_per_page+"; Num pages: "+num_pages);

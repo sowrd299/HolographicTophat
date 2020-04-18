@@ -24,7 +24,7 @@ class Box {
 
     void draw() {
         setup_draw();
-        rect(r.x,r.y,r.w,r.h);
+        rect(r.get_x(),r.get_y(),r.get_w(),r.get_h());
     }
 
 }
@@ -44,11 +44,11 @@ class TabBox extends Box{
 
         beginShape();
 
-        vertex(r.x, r.y+corner_size);
-        vertex(r.x + r.w, r.y);
-        vertex(r.x + r.w, r.y + r.h);
-        vertex(r.x, r.y+r.h-corner_size);
-        vertex(r.x+corner_size, r.y+r.h/2);
+        vertex(r.get_x(), r.get_y()+corner_size);
+        vertex(r.get_x() + r.get_w(), r.get_y());
+        vertex(r.get_x() + r.get_w(), r.get_y() + r.get_h());
+        vertex(r.get_x(), r.get_y()+r.get_h()-corner_size);
+        vertex(r.get_x()+corner_size, r.get_y()+r.get_h()/2);
 
         endShape();
     }
@@ -71,21 +71,21 @@ class TicketBox extends Box{
 
         // do the background rectangle
         strokeWeight(max(stroke_weight-1,0));
-        rect(r.x + corner_size/2, r.y + corner_size/2, r.w - corner_size, r.h - corner_size);
+        rect(r.get_x() + corner_size/2, r.get_y() + corner_size/2, r.get_w() - corner_size, r.get_h() - corner_size);
 
         // the main box
         strokeWeight(stroke_weight);
-        int x1 = r.x + corner_size;
-        int x2 = r.x + r.w - corner_size;
-        int x3 = r.x + r.w;
-        int y1 = r.y + corner_size;
-        int y2 = r.y + r.h - corner_size;
-        int y3 = r.y + r.h;
+        int x1 = r.get_x() + corner_size;
+        int x2 = r.get_x() + r.get_w() - corner_size;
+        int x3 = r.get_x() + r.get_w();
+        int y1 = r.get_y() + corner_size;
+        int y2 = r.get_y() + r.get_h() - corner_size;
+        int y3 = r.get_y() + r.get_h();
         beginShape();
-        vertex(x1, r.y);
+        vertex(x1, r.get_y());
 
         // top right corner
-        vertex(x2, r.y);
+        vertex(x2, r.get_y());
         bezierVertex(x2, y1, x3, y1, x3, y1);
 
         // bottom right corner
@@ -94,11 +94,11 @@ class TicketBox extends Box{
 
         // bottom left corner
         vertex(x1,y3);
-        bezierVertex(x1, y2, r.x, y2, r.x, y2);
+        bezierVertex(x1, y2, r.get_x(), y2, r.get_x(), y2);
 
         // top left corner
-        vertex(r.x,y1);
-        bezierVertex(x1, y1, x1, r.y, x1, r.y);
+        vertex(r.get_x(),y1);
+        bezierVertex(x1, y1, x1, r.get_y(), x1, r.get_y());
 
         endShape();
     
@@ -153,10 +153,10 @@ class DeskBox extends Box{
 
         super.draw();
 
-        draw_corner(r.x, r.y, 1, 1);
-        draw_corner(r.x+r.w, r.y, -1, 1);
-        draw_corner(r.x+r.w, r.y+r.h, -1, -1);
-        draw_corner(r.x, r.y+r.h, 1, -1);
+        draw_corner(r.get_x(), r.get_y(), 1, 1);
+        draw_corner(r.get_x()+r.get_w(), r.get_y(), -1, 1);
+        draw_corner(r.get_x()+r.get_w(), r.get_y()+r.get_h(), -1, -1);
+        draw_corner(r.get_x(), r.get_y()+r.get_h(), 1, -1);
 
     }
 
@@ -175,11 +175,11 @@ class ShieldBox extends Box {
 
         beginShape();
 
-        vertex(r.x + r.w/2, r.y);
-        bezierVertex(r.x + r.w/2 + corner_size, r.y + corner_size/4, r.x + r.w - corner_size, r.y + corner_size/2, r.x + r.w, r.y + corner_size/2);
-        bezierVertex(r.x + r.w, r.y + r.h - corner_size/2, r.x + r.w - corner_size, r.y + r.h - corner_size/2, r.x + r.w/2, r.y + r.h);
-        bezierVertex(r.x + corner_size, r.y + r.h - corner_size/2, r.x, r.y + r.h - corner_size/2, r.x, r.y + corner_size/2);
-        bezierVertex(r.x + corner_size, r.y + corner_size/2, r.x + r.w/2 - corner_size, r.y + corner_size/4, r.x + r.w/2, r.y);
+        vertex(r.get_x() + r.get_w()/2, r.get_y());
+        bezierVertex(r.get_x() + r.get_w()/2 + corner_size, r.get_y() + corner_size/4, r.get_x() + r.get_w() - corner_size, r.get_y() + corner_size/2, r.get_x() + r.get_w(), r.get_y() + corner_size/2);
+        bezierVertex(r.get_x() + r.get_w(), r.get_y() + r.get_h() - corner_size/2, r.get_x() + r.get_w() - corner_size, r.get_y() + r.get_h() - corner_size/2, r.get_x() + r.get_w()/2, r.get_y() + r.get_h());
+        bezierVertex(r.get_x() + corner_size, r.get_y() + r.get_h() - corner_size/2, r.get_x(), r.get_y() + r.get_h() - corner_size/2, r.get_x(), r.get_y() + corner_size/2);
+        bezierVertex(r.get_x() + corner_size, r.get_y() + corner_size/2, r.get_x() + r.get_w()/2 - corner_size, r.get_y() + corner_size/4, r.get_x() + r.get_w()/2, r.get_y());
 
         endShape();
 

@@ -14,7 +14,7 @@ class LoginMenu extends Menu{
 
         int rows = 4;
         int cols = 4;
-        Rect[] rects = create_rects(r.x + 2*margin, r.y + 2*margin + 5*font_size, (r.w - (6*margin))/cols, r.h/(rows+4), margin, margin, rows, cols);
+        Rect[] rects = create_rects(r.get_x() + 2*margin, r.get_y() + 2*margin + 5*font_size, (r.get_w() - (6*margin))/cols, r.get_h()/(rows+4), margin, margin, rows, cols);
 
         // the background button
         add_button(new BackgroundButton(

@@ -60,9 +60,9 @@ class Menu extends CompositButton {
     Menu(MenuSwitcher m, color holo_color){
         super(get_screen_rect(), "", holo_color, null);
         menu_switcher = m;
-        this.holo_color = holo_color;
+        this.get_h()olo_color = holo_color;
         margin *= 3;    
-        font_size = r.h/36;
+        font_size = r.get_h()/36;
     }
 
     /**

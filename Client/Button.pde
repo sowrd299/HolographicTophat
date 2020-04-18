@@ -21,7 +21,7 @@ class AckDots {
         this.margin = margin;
 
         // start not animated, even at time 0;
-        this.when_last_played = -(2*anim_length);
+        this.get_w()hen_last_played = -(2*anim_length);
     }
 
     void play_anim(){
@@ -36,8 +36,8 @@ class AckDots {
         }
         stroke(c);
         strokeWeight(10);
-        point(r.x+margin+current_disp, r.y + r.h/2);
-        point(r.x+r.w-margin-current_disp, r.y + r.h/2);
+        point(r.get_x()+margin+current_disp, r.get_y() + r.get_h()/2);
+        point(r.get_x()+r.get_w()-margin-current_disp, r.get_y() + r.get_h()/2);
     }
 
 }
@@ -68,11 +68,11 @@ class Button {
         this.r= rect;
         this.label = label;
         this.box = box;
-        this.margin = min(r.h/8, height/120); // TODO: ideally would not need to use "height" here
+        this.margin = min(r.get_h()/8, height/120); // TODO: ideally would not need to use "height" here
 
         font = loadFont("TlwgTypist-Bold-48.vlw");
-        font_size = r.h;
-        this.handler = handler;
+        font_size = r.get_h();
+        this.get_h()andler = handler;
         // create the font color
         colorMode(HSB);
         this.c = color(hue(c), saturation(c), 50);
@@ -107,7 +107,7 @@ class Button {
     Returns the width of the area the label will be printed in
     */
     int get_label_width(){
-        return r.w - 2*margin;
+        return r.get_w() - 2*margin;
     }
 
     void setup_label_draw(){
@@ -122,12 +122,12 @@ class Button {
         String text = get_label();
         if(text.length() > 0){
             setup_label_draw();
-            text(text, r.x + margin, r.y+ 1.5*margin, get_label_width(), r.h);
+            text(text, r.get_x() + margin, r.get_y()+ 1.5*margin, get_label_width(), r.get_h());
         }
     }
 
     boolean click(){
-        return this.click(r.x + 1, r.y + 1);
+        return this.click(r.get_x() + 1, r.get_y() + 1);
     }
 
     boolean click(int x, int y){
@@ -203,7 +203,7 @@ class TicketButton extends Button{
         super(rect, label, c, handler);
         this.box = new TicketBox(rect, c, stroke_weight, corner_size);
         this.font = loadFont("OldeEnglish-Regular-48.vlw");
-        this.font_size = r.h-(2*margin);  
+        this.font_size = r.get_h()-(2*margin);  
 
         // create the animated dots
         dots = new AckDots(rect, 500, this.c, 64, 2*margin);
@@ -246,7 +246,7 @@ class ShieldButton extends Button {
 
     ShieldButton(Rect rect, String label, color c, ButtonHandler handler, int stroke_weight, int corner_size){
         super(rect, label, c, handler);
-        font_size = r.h - 2*margin;
+        font_size = r.get_h() - 2*margin;
         box = new ShieldBox(rect, c, stroke_weight, corner_size);
     }
 

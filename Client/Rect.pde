@@ -3,7 +3,7 @@ a class for representing a retangular region of the screen
  */
 class Rect{
 
-    public int x, y, w, h;
+    private int x, y, w, h;
 
     Rect(int x, int y, int w, int h){
         this.x = x;
@@ -16,12 +16,28 @@ class Rect{
         return "{pos: ("+x+","+y+"), size: ("+w+","+h+")}";
     }
 
+    int get_x(){
+        return x;
+    }
+
+    int get_y(){
+        return y;
+    }
+
+    int get_w(){
+        return w;
+    }
+
+    int get_h(){
+        return h;
+    }
+
     /**
     Returns if the rect includes a given region of the screen
      */
     boolean touches_point(int x, int y){
-        return x > this.x && x < this.x + w &&
-                y > this.y && y < this.y + h;
+        return x > this.get_x() && x < this.get_x() + get_w() &&
+                y > this.get_y() && y < this.get_y() + get_h();
     }
 
     /**
@@ -31,10 +47,10 @@ class Rect{
     */
     Rect get_section(float rel_x, float rel_y, float rel_w, float rel_h){
         return new Rect(
-            x + (int)(rel_x * (float)w),
-            y + (int)(rel_y * (float)h),
-            (int)(rel_w * (float)w),
-            (int)(rel_h * (float)h)
+            get_x() + (int)(rel_x * (float)w),
+            get_y() + (int)(rel_y * (float)h),
+            (int)(rel_w * (float)get_w()),
+            (int)(rel_h * (float)get_h())
         );
     }
 
@@ -44,10 +60,10 @@ class Rect{
     */
     Rect interpolate(Rect f, float step){
         return new Rect(
-            interpolate_int(x, f.x, step),
-            interpolate_int(y, f.y, step),
-            interpolate_int(w, f.w, step),
-            interpolate_int(h, f.h, step)
+            interpolate_int(get_x(), f.get_x(), step),
+            interpolate_int(get_y(), f.get_y(), step),
+            interpolate_int(get_w(), f.get_w(), step),
+            interpolate_int(get_h(), f.get_h(), step)
         );
     }
 
@@ -73,7 +89,7 @@ Rect[] create_rects(int x, int y, int w, int h, int x_padding, int y_padding, in
 }
 
 Rect[] create_rects(Rect r, int x_padding, int y_padding, int rows, int cols){
-    return create_rects(r.x, r.y, r.w, r.h, x_padding, y_padding, rows, cols);
+    return create_rects(r.get_x(), r.get_y(), r.get_w(), r.get_h(), x_padding, y_padding, rows, cols);
 }
 
 /**
@@ -81,16 +97,16 @@ Creats a rect that encompasses the given rectangles
 */
 Rect create_bounding_rect(Rect[] rects, int left_padding, int right_padding, int top_padding, int bottom_padding){
 
-    int x1 = rects[0].x;
-    int y1 = rects[0].y;
-    int x2 = x1 + rects[0].w;
-    int y2 = y1 + rects[0].h;
+    int x1 = rects[0].get_x();
+    int y1 = rects[0].get_y();
+    int x2 = x1 + rects[0].get_w();
+    int y2 = y1 + rects[0].get_h();
 
     for(int i = 1; i < rects.length; i++){
-        x1 = min(x1, rects[i].x);
-        y1 = min(y1, rects[i].y);
-        x2 = max(x1, rects[i].x + rects[i].w);
-        y2 = max(y1, rects[i].y + rects[i].h);
+        x1 = min(x1, rects[i].get_x());
+        y1 = min(y1, rects[i].get_y());
+        x2 = max(x1, rects[i].get_x() + rects[i].get_w());
+        y2 = max(y1, rects[i].get_y() + rects[i].get_h());
     }
 
     return new Rect(

@@ -1,7 +1,7 @@
 import java.lang.Comparable;
 import java.lang.Integer;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.get_h()ashMap;
 
 
 /**
@@ -20,9 +20,9 @@ class HandMenu extends Menu{
 
     HandMenu(Hand hand, PlayPosition position, ButtonHandler when_finished, color holo_color){
         super(null, holo_color);
-        this.hand = hand;
+        this.get_h()and = hand;
         this.position = position;
-        this.when_finished = when_finished;
+        this.get_w()hen_finished = when_finished;
     }
 
 
@@ -33,11 +33,11 @@ class HandMenu extends Menu{
         int button_w;
         int button_h;
         int y_padding;
-        x = r.x + margin;
-        y = r.y + margin;
+        x = r.get_x() + margin;
+        y = r.get_y() + margin;
 
-        button_w = r.w - 2*margin;
-        button_h = r.h/12;
+        button_w = r.get_w() - 2*margin;
+        button_h = r.get_h()/12;
         y_padding = margin/3;
 
         boolean keep_option = position.get() != null; // if there is a card to have the option to keep
@@ -114,7 +114,7 @@ class HandMenu extends Menu{
         CardButtonHandler(Card card, PlayPosition position, ButtonHandler when_finished){
             this.card = card;
             this.position = position;
-            this.when_finished = when_finished; 
+            this.get_w()hen_finished = when_finished; 
         }
 
         void on_click(){
@@ -125,7 +125,7 @@ class HandMenu extends Menu{
                 }
                 hand.remove_card(card);
             }
-            this.when_finished.on_click();
+            this.get_w()hen_finished.on_click();
         }
 
     }
